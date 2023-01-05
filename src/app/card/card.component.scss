@@ -1,0 +1,107 @@
+$color: #c0c0c0;
+$background: #f0f0f0;
+$gutter: 10px;
+$font-size: 16px;
+
+$card-background: #fff;
+$card-padding: 4px;
+$card-width: 172px;
+$card-height: 240px;
+$card-color-red: #e44145;
+$card-color-black: #252525;
+$card-symbol-size: 40px;
+
+.card {
+    position: relative;
+	font: $font-size 'Trebuchet MS';
+
+	box-shadow: 0 2px 4px rgba(0, 0, 0, 0.18);
+
+    &:before,
+	&:after {
+		position: absolute;
+		width: 12px;
+		text-align: center;
+		letter-spacing: -2px;
+	}
+	
+	&:before {
+		top: $card-padding;
+		left: $card-padding;
+	}
+	
+	&:after {
+		bottom: $card-padding;
+		right: $card-padding;
+		transform: rotate(180deg)
+	}
+
+    &--heart {
+		color: $card-color-red;
+		
+		&:before,
+		&:after {
+			content: attr(value) ' ♥';
+		}
+	}
+}
+
+.card__inner {
+	box-sizing: border-box;
+	position: absolute;
+	display: flex;
+	justify-content: space-between;
+	top: 6 * $card-padding;
+	left: 6 * $card-padding;
+	right: 6 * $card-padding;
+	bottom: 6 * $card-padding;
+	
+	&--centered {
+		justify-content: center;
+	}
+}
+
+.card__column {
+	display: flex;
+	flex-direction: column;
+	justify-content: space-between;
+	
+	&--centered {
+		justify-content: center;
+	}
+}
+
+.card__symbol {
+	display: inline-block;
+	height: $card-symbol-size;
+	text-align: center;
+    font-size: $card-symbol-size;
+    line-height: $card-symbol-size;
+	
+	.card--heart &:before {
+		content: '♥';
+	}
+	
+	.card--spade &:before {
+		content: '♠';
+	}
+	
+	&--rotated,
+	&:nth-last-child(2),
+    &:last-of-type {
+		transform: rotate(180deg);
+	}
+	
+	&:first-of-type {
+		transform: rotate(0);
+	}
+	
+	&--big {
+		flex-basis: 0.25 * $card-height;
+	}
+	
+	&--huge {
+		flex-basis: 0.45 * $card-height;
+	}
+}
+
