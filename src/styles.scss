@@ -15,5 +15,6 @@ body {
 
 .container {
     margin: 20px;
-    display: flex;
+    display:flex;
+    flex-flow:row wrap;
 }

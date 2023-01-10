@@ -1,27 +1,37 @@
 $color: #c0c0c0;
 $background: #f0f0f0;
 $gutter: 10px;
-$font-size: 16px;
+$font-md-size: 7px;
+$font-size: 12px;
 
 $card-background: #fff;
-$card-padding: 4px;
-$card-width: 172px;
-$card-height: 240px;
+$card-padding: 1px;
+$card-width: 100px;
+$card-height: 140px;
+$card-md-width: 50px;
+$card-md-height: 70px;
 $card-color-red: #e44145;
 $card-color-black: #252525;
-$card-symbol-size: 40px;
+$card-symbol-size: 2.5vw;
 
 .card {
-    position: relative;
 	font: $font-size 'Trebuchet MS';
 
+	width: $card-width;
+	height: $card-height;
+	@media screen and (max-width: 768px) {
+		width: $card-md-width;
+		font: $font-md-size 'Trebuchet MS';
+		height: $card-md-height;
+	}
+
+	margin: $gutter;
 	box-shadow: 0 2px 4px rgba(0, 0, 0, 0.18);
+	display: flex;
 
     &:before,
 	&:after {
-		position: absolute;
-		width: 12px;
-		text-align: center;
+		width: 5px;
 		letter-spacing: -2px;
 	}
 	
@@ -35,8 +45,8 @@ $card-symbol-size: 40px;
 		right: $card-padding;
 		transform: rotate(180deg)
 	}
-
-    &--heart {
+	
+	&--heart {
 		color: $card-color-red;
 		
 		&:before,
@@ -44,40 +54,41 @@ $card-symbol-size: 40px;
 			content: attr(value) ' ♥';
 		}
 	}
-}
 
-.card__inner {
-	box-sizing: border-box;
-	position: absolute;
-	display: flex;
-	justify-content: space-between;
-	top: 6 * $card-padding;
-	left: 6 * $card-padding;
-	right: 6 * $card-padding;
-	bottom: 6 * $card-padding;
-	
-	&--centered {
-		justify-content: center;
+	&--spade{		
+		&:before,
+		&:after {
+			content: attr(value) ' ♠';
+		}
 	}
 }
 
+
 .card__column {
-	display: flex;
+	flex: 100%;
 	flex-direction: column;
-	justify-content: space-between;
-	
-	&--centered {
-		justify-content: center;
+	display: flex;
+	justify-content: space-around;
+	font-size: 1.7em;
+
+	@media screen and (max-width: 768px) {
+		font-size: 1.2em;
 	}
 }
 
 .card__symbol {
-	display: inline-block;
-	height: $card-symbol-size;
 	text-align: center;
-    font-size: $card-symbol-size;
-    line-height: $card-symbol-size;
-	
+
+	&--seven {
+		position: relative;
+		bottom: 17%;
+	}
+
+	&--nine {
+		position: relative;
+		bottom: 25%;
+	}
+
 	.card--heart &:before {
 		content: '♥';
 	}
@@ -85,23 +96,9 @@ $card-symbol-size: 40px;
 	.card--spade &:before {
 		content: '♠';
 	}
-	
-	&--rotated,
-	&:nth-last-child(2),
-    &:last-of-type {
+
+	&--rotated {
 		transform: rotate(180deg);
-	}
-	
-	&:first-of-type {
-		transform: rotate(0);
-	}
-	
-	&--big {
-		flex-basis: 0.25 * $card-height;
-	}
-	
-	&--huge {
-		flex-basis: 0.45 * $card-height;
 	}
 }
 
