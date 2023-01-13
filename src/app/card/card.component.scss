@@ -28,39 +28,25 @@ $card-symbol-size: 2.5vw;
 	margin: $gutter;
 	box-shadow: 0 2px 4px rgba(0, 0, 0, 0.18);
 	display: flex;
-
-    &:before,
-	&:after {
-		width: 5px;
-		letter-spacing: -2px;
-	}
 	
-	&:before {
-		top: $card-padding;
-		left: $card-padding;
-	}
-	
-	&:after {
-		bottom: $card-padding;
-		right: $card-padding;
-		transform: rotate(180deg)
-	}
-	
-	&--heart {
+	&--heart, &--diamonds {
 		color: $card-color-red;
 		
-		&:before,
-		&:after {
-			content: attr(value) ' ♥';
-		}
 	}
+}
 
-	&--spade{		
-		&:before,
-		&:after {
-			content: attr(value) ' ♠';
-		}
-	}
+.card_value {
+	width: 5px;
+	letter-spacing: 0px;
+	top: $card-padding;
+	left: $card-padding;
+}
+
+.card_value_rotated {
+	width: 5px;
+	bottom: $card-padding;
+	right: $card-padding;
+	transform: rotate(180deg)
 }
 
 
@@ -71,9 +57,18 @@ $card-symbol-size: 2.5vw;
 	justify-content: space-around;
 	font-size: 1.7em;
 
+	:nth-last-child(1), :nth-last-child(2){
+		transform: rotate(180deg);
+	}
+
+	:nth-child(1) {
+		transform: rotate(0deg);
+	}
+
 	@media screen and (max-width: 768px) {
 		font-size: 1.2em;
 	}
+	background-image: '../images/jack_hearts.jpg';	
 }
 
 .card__symbol {
@@ -97,8 +92,16 @@ $card-symbol-size: 2.5vw;
 		content: '♠';
 	}
 
-	&--rotated {
-		transform: rotate(180deg);
+	.card--clubs &:before {
+		content: '♣';
 	}
+
+	.card--diamonds &:before {
+		content: '♦';
+	}
+}
+
+.card__face {
+	text-align: center;
 }
 

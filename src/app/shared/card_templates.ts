@@ -1,6 +1,5 @@
-export class card {
+export class Card {
+    id: string;
     value: string;
-    inner_class: string;
-    column_class: string;
-    symbol_class: string;
+    classes: string[][];
 };
