@@ -17,22 +17,24 @@ export class CardComponent {
   cardSelected: Card;
   valueCard: boolean;
 
+  isFrontCard: boolean;
+
   faceCards: Object = {
     "J": {
-      'heart': '../../assets/images/jack_hearts.jpg',
       'spade': '../../assets/images/jack_spade.jpg',
+      'heart': '../../assets/images/jack_hearts.jpg',
       'diamonds': '../../assets/images/jack_diamonds.jpg',
       'clubs': '../../assets/images/jack_clubs.jpg'
     },
     "Q": {
-      'heart': '../../assets/images/queen_hearts.jpg',
       'spade': '../../assets/images/queen_spade.jpg',
+      'heart': '../../assets/images/queen_hearts.jpg',
       'diamonds': '../../assets/images/queen_diamonds.jpg',
       'clubs': '../../assets/images/queen_clubs.jpg'
     },
     "K": {
-      'heart': '../../assets/images/king_hearts.jpg',
       'spade': '../../assets/images/king_spade.jpg',
+      'heart': '../../assets/images/king_hearts.jpg',
       'diamonds': '../../assets/images/king_diamonds.jpg',
       'clubs': '../../assets/images/king_clubs.jpg'
     }
@@ -45,6 +47,8 @@ export class CardComponent {
   ngOnInit() {
     this.cardSelected = this.cardClasses.find((card) => this.cardId == card.id)!;
     this.cardNumber = this.cardSelected.value;
+
+    this.isFrontCard = false;
 
     let number = parseInt(this.cardId);
 
@@ -69,6 +73,10 @@ export class CardComponent {
         this.cardSuitSymbol = '♦';
         break;
     }
+  }
+
+  toggleFrontBack() {
+    this.isFrontCard = !this.isFrontCard;
   }
 
 }

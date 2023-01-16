@@ -1,13 +1,17 @@
-<div class="card card--{{cardSuit}}">
+<div class="card card--{{cardSuit}}" *ngIf="isFrontCard" (click)="toggleFrontBack()">
     <div class="card_value">{{cardNumber}}<br>{{cardSuitSymbol}}</div>
     <div class="card__column" *ngFor="let class of cardSelected.classes">
         <div *ngFor="let symbol of class">
             <div *ngIf="valueCard" class="{{symbol}}"></div>
             <div class="{{symbol}}" *ngIf="!valueCard">
-                <img width="70px" height="120px" src="{{cardImage}}">
+                <img width="80%" height="80%" src="{{cardImage}}">
             </div>
         </div>
     </div>
     <div class="card_value_rotated">{{cardNumber}}<br>{{cardSuitSymbol}}</div>
+</div>
+
+<div class="card" *ngIf="!isFrontCard" (click)="toggleFrontBack()">
+    <img class="card_back" src="../../assets/images/card_back.jpeg">
 </div>
 

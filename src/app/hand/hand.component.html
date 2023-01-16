@@ -1,0 +1,6 @@
+<div class="container">
+
+    <div *ngFor="let card of selectedCards">
+        <app-card card="{{card['card']}}" suit="{{card['suit']}}"></app-card>
+    </div>
+</div>

@@ -1,18 +1,13 @@
-$color: #c0c0c0;
-$background: #f0f0f0;
 $gutter: 10px;
 $font-md-size: 7px;
 $font-size: 12px;
 
-$card-background: #fff;
 $card-padding: 1px;
 $card-width: 100px;
 $card-height: 140px;
 $card-md-width: 50px;
 $card-md-height: 70px;
 $card-color-red: #e44145;
-$card-color-black: #252525;
-$card-symbol-size: 2.5vw;
 
 .card {
 	font: $font-size 'Trebuchet MS';
@@ -66,9 +61,8 @@ $card-symbol-size: 2.5vw;
 	}
 
 	@media screen and (max-width: 768px) {
-		font-size: 1.2em;
+		font-size: 1.5em;
 	}
-	background-image: '../images/jack_hearts.jpg';	
 }
 
 .card__symbol {
@@ -105,3 +99,7 @@ $card-symbol-size: 2.5vw;
 	text-align: center;
 }
 
+.card_back {
+	width: 106%;
+	height: 100%;
+}
