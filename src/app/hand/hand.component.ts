@@ -1,4 +1,5 @@
-import { Component } from '@angular/core';
+import { Component, Input } from '@angular/core';
+import { CardsService } from '../services/cards.service';
 
 function randomIntFromInterval(min: number, max: number) { // min and max included 
   return Math.floor(Math.random() * (max - min + 1) + min)
@@ -10,32 +11,31 @@ function randomIntFromInterval(min: number, max: number) { // min and max includ
   styleUrls: ['./hand.component.scss']
 })
 export class HandComponent {
-  numCards = 5;
+  @Input("num_cards") numCards: string = "5";
+  @Input("open_hand") openHand: string = "false";
 
   selectedCards: any[];
-  cardSuits = ["spade", "heart", "diamonds", "clubs"]
 
-  constructor() {
+  constructor(private cardsService: CardsService) {
 
   }
 
   ngOnInit() {
-    let cardNumbers: number[] = [];
     this.selectedCards = [];
+    let num = parseInt(this.numCards)
+    let cardNumber: number;
 
-    for(let i=0; i<this.numCards; i++) {
-      let cardNumber = randomIntFromInterval(1, 52);
+    let cardNumbers = this.cardsService.getCards()
+
+    for(let i=0; i<num; i++) {
+      cardNumber = randomIntFromInterval(0, 51);
+
       while(cardNumbers.includes(cardNumber) == true) {
         cardNumber = randomIntFromInterval(1, 52);
       }
-      cardNumbers.push(cardNumber);
 
-      let cardSuit: string = this.cardSuits[Math.floor(cardNumber / 13)];
-      let cardNum = String((cardNumber - 1) % 13 + 1);
-
-      console.log(cardNum)
-      console.log(cardSuit)
-      this.selectedCards.push({suit: cardSuit, card: cardNum})
+      this.cardsService.setCard(cardNumber);
+      this.selectedCards.push({"card": cardNumber.toString(), "open": true})
     }
 
   

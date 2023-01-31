@@ -1,6 +1,6 @@
-<div class="container">
-
+<div fxLayout="row" fxLayoutGap="10px">
     <div *ngFor="let card of selectedCards">
-        <app-card card="{{card['card']}}" suit="{{card['suit']}}"></app-card>
+        <app-card fxFlex card_number="{{card.card}}" open="{{card.open}}"></app-card>
     </div>
+    
 </div>

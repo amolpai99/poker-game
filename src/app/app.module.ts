@@ -7,12 +7,15 @@ import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { CardComponent } from './card/card.component';
 import { HandComponent } from './hand/hand.component';
+import { TableComponent } from './table/table.component';
+import { CardsService } from './services/cards.service';
 
 @NgModule({
   declarations: [
     AppComponent,
     CardComponent,
-    HandComponent
+    HandComponent,
+    TableComponent
   ],
   imports: [
     BrowserModule,
@@ -20,7 +23,9 @@ import { HandComponent } from './hand/hand.component';
     MatCardModule,
     FlexLayoutModule
   ],
-  providers: [],
+  providers: [
+    CardsService
+  ],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

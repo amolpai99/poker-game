@@ -1,14 +1,14 @@
-<div class="card card--{{cardSuit}}" *ngIf="isFrontCard" (click)="toggleFrontBack()">
-    <div class="card_value">{{cardNumber}}<br>{{cardSuitSymbol}}</div>
+<div class="card card--{{cardSuit.key}}" *ngIf="isFrontCard" (click)="toggleFrontBack()">
+    <div class="card_value">{{cardSelected.value}}<br>{{cardSuit.value}}</div>
     <div class="card__column" *ngFor="let class of cardSelected.classes">
         <div *ngFor="let symbol of class">
-            <div *ngIf="valueCard" class="{{symbol}}"></div>
-            <div class="{{symbol}}" *ngIf="!valueCard">
+            <div class="{{symbol}}" *ngIf="!isFaceCard"></div>
+            <div class="{{symbol}}" *ngIf="isFaceCard">
                 <img width="80%" height="80%" src="{{cardImage}}">
             </div>
         </div>
     </div>
-    <div class="card_value_rotated">{{cardNumber}}<br>{{cardSuitSymbol}}</div>
+    <div class="card_value_rotated">{{cardSelected.value}}<br>{{cardSuit.value}}</div>
 </div>
 
 <div class="card" *ngIf="!isFrontCard" (click)="toggleFrontBack()">
