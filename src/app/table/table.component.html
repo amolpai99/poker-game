@@ -1,8 +1,16 @@
 <div class="table" fxLayout="row" class="container">
-    <app-hand class="table_hand" num_cards="2"></app-hand>
+    <app-hand class="table_hand" num_cards="2" hand_type="hand1"></app-hand>
+    <app-hand class="table_hand" num_cards="2" hand_type="hand2"></app-hand>
+    <app-hand class="table_hand" num_cards="2" hand_type="hand3"></app-hand>
 </div>
 
 <div class="table" fxLayout="row" class="container">
-    <app-hand style="margin-right: 0;" class="table_hand" num_cards="3" open_hand="true"></app-hand>
-    <app-hand style="margin-left: 0;" class="table_hand" num_cards="2"></app-hand>
+    <app-hand style="margin-right: 0;" class="table_hand" num_cards="3" open_hand="true" hand_type="table"></app-hand>
+    <app-hand style="margin-left: 0;" class="table_hand" num_cards="2" hand_type="table"></app-hand>
+</div>
+
+<div>
+    <h3>
+        <app-poker-hand></app-poker-hand>
+    </h3>
 </div>

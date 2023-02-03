@@ -22,20 +22,20 @@ export class CardComponent {
 
   cardSuits = [
     {
-      "key": "spade",
-      "value": "♠"
-    },
-    {
-      "key": "heart",
-      "value": "♥"
+      "key": "clubs",
+      "value": "♣"
     },
     {
       "key": "diamonds",
       "value": "♦"
     },
     {
-      "key": "clubs",
-      "value": "♣"
+      "key": "heart",
+      "value": "♥"
+    },
+    {
+      "key": "spade",
+      "value": "♠"
     }
   ]
 
@@ -47,7 +47,7 @@ export class CardComponent {
     let cardId: string, number: number;
     number = parseInt(this.cardNumber);
 
-    this.cardSuit = this.cardSuits[Math.floor(number / 13)];
+    this.cardSuit = this.cardSuits[Math.floor((number - 1) / 13)];
     cardId = String(number % 13 + 1);
 
     this.cardSelected = this.cardClasses.find((card) => cardId == card.id)!;

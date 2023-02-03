@@ -1,6 +1,4 @@
 import { Injectable } from '@angular/core';
-import { CARDS } from '../shared/cards';
-import { Card } from '../shared/card_templates';
 
 @Injectable({
   providedIn: 'root'
@@ -8,16 +6,39 @@ import { Card } from '../shared/card_templates';
 export class CardsService {
   selectedCards: number[];
 
+  tableCards: number[];
+  handCards = {};
+
   constructor() {
     this.selectedCards = [];
+    this.tableCards = [];
   }
 
   getCards(): number[] {
     return this.selectedCards
   }
 
-  setCard(cardNum: number) {
-    console.log("Cards: ", this.selectedCards)
-    this.selectedCards.push(cardNum)
+  getTableCards(): number[] {
+    return this.tableCards
+  }
+
+  getAllHandCards(): {} {
+    return this.handCards
+  }
+
+  setCard(cardNum: number, hand: string) {
+    if(hand == "table") {
+      this.tableCards.push(cardNum)
+    }
+    else {
+      if(this.handCards[hand]) {
+        this.handCards[hand].push(cardNum)
+      }
+      else {
+        this.handCards[hand] = [cardNum]
+      }
+    }
+    this.selectedCards.push(cardNum);
+    this.selectedCards.sort((a, b) => {return a-b});
   }
 }
