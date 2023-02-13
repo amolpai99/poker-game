@@ -4,3 +4,7 @@ export class Card {
     images?: string[];
     classes: string[][];
 };
+
+export class Cards {
+    cards: number[];
+}

@@ -1,44 +1,28 @@
+import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
+import { catchError, Observable, of } from 'rxjs';
+import { baseURL } from '../shared/baseurl';
+import { Cards } from '../shared/card_templates';
+import { ProcessHttpmsgService } from './process-httpmsg.service';
 
 @Injectable({
   providedIn: 'root'
 })
 export class CardsService {
-  selectedCards: number[];
+  cards = {};
 
-  tableCards: number[];
-  handCards = {};
-
-  constructor() {
-    this.selectedCards = [];
-    this.tableCards = [];
+  constructor(
+    private httpClient: HttpClient,
+    private processMessage: ProcessHttpmsgService) {
+    this.cards = {};
   }
 
-  getCards(): number[] {
-    return this.selectedCards
+  getCards(playerName: string): Observable<Cards> {
+    return this.httpClient.get<Cards>(baseURL + "get_cards?player=" + playerName)
+           .pipe(catchError(this.processMessage.handleError));
   }
 
-  getTableCards(): number[] {
-    return this.tableCards
-  }
-
-  getAllHandCards(): {} {
-    return this.handCards
-  }
-
-  setCard(cardNum: number, hand: string) {
-    if(hand == "table") {
-      this.tableCards.push(cardNum)
-    }
-    else {
-      if(this.handCards[hand]) {
-        this.handCards[hand].push(cardNum)
-      }
-      else {
-        this.handCards[hand] = [cardNum]
-      }
-    }
-    this.selectedCards.push(cardNum);
-    this.selectedCards.sort((a, b) => {return a-b});
+  generateCards(numPlayers: number) {
+    return this.httpClient.get(baseURL + "generate?num_players=" + numPlayers.toString()).subscribe();
   }
 }

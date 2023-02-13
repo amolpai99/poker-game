@@ -1,1 +1,9 @@
-<p>Winner: {{winner}} with sequence {{winningHand}}</p>
+<!-- <p class="winner">Winner: {{winner}} with sequence {{winningHand}}</p> -->
+
+<div *ngFor="let winner of winners">
+    <p class="winner">Winner: {{winner}}</p>
+</div>
+
+<div>
+    <p class="winner">Sequence: {{winningHand}}</p>
+</div>
