@@ -9,20 +9,30 @@ import { ProcessHttpmsgService } from './process-httpmsg.service';
   providedIn: 'root'
 })
 export class CardsService {
-  cards = {};
+  cards: {};
 
   constructor(
-    private httpClient: HttpClient,
-    private processMessage: ProcessHttpmsgService) {
-    this.cards = {};
+    private httpClient: HttpClient) {
+      this.cards = {};
   }
 
-  getCards(playerName: string): Observable<Cards> {
-    return this.httpClient.get<Cards>(baseURL + "get_cards?player=" + playerName)
-           .pipe(catchError(this.processMessage.handleError));
+  getCards(playerName: string): Observable<number[]> {
+    let cardsObservable = new Observable<number[]>((observer) => {
+      setInterval(() => {
+        let playerCards = this.cards[playerName]
+        observer.next(playerCards)
+      }, 100);
+    })
+    return cardsObservable;
   }
 
   generateCards(numPlayers: number) {
-    return this.httpClient.get(baseURL + "generate?num_players=" + numPlayers.toString()).subscribe();
+    this.httpClient.post(baseURL + "cards?num_players=" + numPlayers.toString(), null)
+                   .subscribe((cards) => this.cards = cards["cards"]);
+    return
+  }
+
+  getWinner(): Observable<any> {
+    return this.httpClient.get(baseURL + "get_winner")
   }
 }

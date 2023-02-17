@@ -11,7 +11,6 @@ function randomIntFromInterval(min: number, max: number) { // min and max includ
   styleUrls: ['./hand.component.scss']
 })
 export class HandComponent {
-  @Input("open_hand") openHand: string = "false";
   @Input("player") playerName: string;
 
   cards: number[];
@@ -23,7 +22,7 @@ export class HandComponent {
   ngOnInit() {
     this.cardsService.getCards(this.playerName).subscribe({
       next: (cards) => {
-        this.cards = cards.cards
+        this.cards = cards
       }}
     );
   }

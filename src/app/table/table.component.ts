@@ -10,6 +10,8 @@ export class TableComponent {
   numPlayers = 4;
 
   playerNames: string[];
+  winners: string[];
+  winningHand: string;
 
   constructor(
     private cardsService: CardsService) {
@@ -24,10 +26,21 @@ export class TableComponent {
       this.playerNames.push("player"+i.toString())
     }
 
+    this.cardsService.getWinner().subscribe((winner) => {
+      this.winners = winner["winners"]
+      this.winningHand = winner["winning_hand"]
+    })
+
   }
 
   generate() {
     this.cardsService.generateCards(this.numPlayers)
+    
+    this.cardsService.getWinner().subscribe((winner) => {
+      this.winners = winner["winners"]
+      this.winningHand = winner["winning_hand"]
+    })
+
   }
 
 }

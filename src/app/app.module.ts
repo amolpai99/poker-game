@@ -10,7 +10,6 @@ import { CardComponent } from './card/card.component';
 import { HandComponent } from './hand/hand.component';
 import { TableComponent } from './table/table.component';
 import { CardsService } from './services/cards.service';
-import { PokerHandComponent } from './poker-hand/poker-hand.component';
 import { baseURL } from './shared/baseurl';
 
 @NgModule({
@@ -18,8 +17,7 @@ import { baseURL } from './shared/baseurl';
     AppComponent,
     CardComponent,
     HandComponent,
-    TableComponent,
-    PokerHandComponent
+    TableComponent
   ],
   imports: [
     BrowserModule,

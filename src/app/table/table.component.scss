@@ -1,5 +1,6 @@
 .table {
     text-align: center;
+    column-width: fit-content;
 }
 
 .table_hand {
@@ -9,4 +10,32 @@
 .player_hand {
     display: flex;
     justify-content: space-evenly;
+}
+
+.player_name {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 1.2em;
+}
+
+.winner {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.button {
+    background-color: white;
+    margin: 2px;
+    padding: 10px;
+    border-radius: 25px;
+	box-shadow: 0 2px 4px rgba(0, 0, 0, 0.18);
+    font-family: "Comic Sans MS", sans-serif;
+
+}
+
+.button:hover {
+    background-color: #E3E3E3;
+    cursor: pointer;
 }

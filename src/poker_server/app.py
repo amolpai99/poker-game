@@ -1,11 +1,13 @@
 import random
 from flask import Flask, request, jsonify
 from flask_cors import CORS
+from poker.poker import PokerHand
 
 app = Flask(__name__)
 CORS(app)
 
 all_cards = None
+
 
 @app.route('/')
 def hello():
@@ -38,21 +40,30 @@ def generate(num_players):
             player_cards.append(num)
         all_cards[player_name] = player_cards
 
-@app.route("/generate")
+@app.route("/cards", methods=["GET", "POST"])
 def generate_cards():
-    num_players = int(request.args.get("num_players", 1))
-    if all_cards is None:
+    if request.method == "POST":
+        num_players = int(request.args.get("num_players", 1))
         generate(num_players)
-    return jsonify({"success": True})
+        print(all_cards)
+        return jsonify({"cards": all_cards})
+    if request.method == "GET":
+        player_name = request.args.get("player", None)
+        player_cards = {"cards": ""}
+        if player_name is not None and all_cards is not None:
+            player_cards = all_cards[player_name]
+        return jsonify({"cards": player_cards})
 
-@app.route("/get_cards", methods=["GET"])
-def get_cards():
-    player_name = request.args.get("player", None)
-    if all_cards is None or player_name is None:
-        return ""
+    return "Wrong method", 405
 
-    cards = all_cards.get(player_name, None)
-    return jsonify({"cards": cards})
+@app.route("/get_winner", methods=["GET"])
+def get_winner():
+    if all_cards is None:
+        return jsonify({"winners": None})
+
+    poker_cls = PokerHand()
+    winners, winning_hand = poker_cls.get_winner(all_cards)
+    return jsonify({"winners": winners, "winning_hand": winning_hand["sequence"].name})
 
 if __name__ == '__main__':
     app.run(host="0.0.0.0", port=5000)

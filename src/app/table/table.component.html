@@ -1,20 +1,24 @@
 
 <div class="table" fxLayout="row" class="container">
     <app-hand class="table_hand" player="table"></app-hand>
+    <p class="player_name">Table</p>
 </div>
 
 <div fxLayout="row" class="player_hand container">
     <div *ngFor="let player of playerNames">
         <app-hand player="{{player}}"></app-hand>
+        <p class="player_name">{{player}}</p>
     </div>
 </div>
 
-<div class="button">
-    <button (click)="generate()">Randomize</button>
+<div style="display: flex; align-items: center; justify-content: center;">
+    <button class="button" (click)="generate()">Start New Game</button>
 </div>
 
-<!-- <div>
-    <h3>
-        <app-poker-hand></app-poker-hand>
-    </h3>
-</div> -->
+<div *ngFor="let winner of winners">
+    <p class="winner">Winner: {{winner}}</p>
+</div>
+
+<div>
+    <p class="winner">Sequence: {{winningHand}}</p>
+</div>
