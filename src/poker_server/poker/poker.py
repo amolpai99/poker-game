@@ -92,7 +92,6 @@ class PokerHand:
                 continue
 
             player_winning_hand = {}
-            print("Finding poker hand for ", player)
 
             all_cards = table_cards + player_cards[player]
             for arr in list(itertools.combinations(all_cards, 5)):
@@ -106,7 +105,6 @@ class PokerHand:
                 if compare_hands(hand, player_winning_hand) == GREATER:
                     player_winning_hand = hand
 
-            print("Winning hand for %s is %s" % (player, player_winning_hand))
             all_player_winning_hands[player] = player_winning_hand
 
         winners = []

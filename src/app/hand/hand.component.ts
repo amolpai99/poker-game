@@ -22,6 +22,7 @@ export class HandComponent {
   ngOnInit() {
     this.cardsService.getCards(this.playerName).subscribe({
       next: (cards) => {
+        console.log("Player Name: ", this.playerName, "Cards:", cards)
         this.cards = cards
       }}
     );
