@@ -4,10 +4,11 @@
     including betting, cards generation and finding the winner.
 '''
 import random
-from flask import Flask
+from flask import Flask, request, jsonify
 from flask_cors import CORS
 from flask_socketio import SocketIO
 from poker.poker import PokerHand
+from poker.games import Games
 
 app = Flask(__name__)
 CORS(app)
@@ -15,6 +16,8 @@ CORS(app)
 sock = SocketIO(app, cors_allowed_origins="*")
 
 ALL_CARDS = None
+
+game_controller = Games()
 
 def generate(num_players):
     '''
@@ -61,6 +64,51 @@ def get_cards(num_players):
     poker_cls = PokerHand()
     winners, winning_hand = poker_cls.get_winner(ALL_CARDS)
     sock.emit('winner', {"winners": winners, "winning_hand": winning_hand["sequence"].name})
+
+@app.route("/create", methods=["POST"])
+def create_new_game():
+    '''
+        Create new game and return name of game to client
+    '''
+    print("Reached here")
+
+    data = request.get_json()
+    username = data["username"]
+    if username == "":
+        return "Username is empty", 404
+
+    game_name = game_controller.create_new_game(username)
+    game_details = {
+        "game_name": game_name,
+        "players": game_controller.get_game_details(game_name)
+    }
+
+    sock.emit('game_details', game_details)
+    return jsonify(game_details), 200
+
+@app.route("/join", methods=["POST"])
+def join_new_game():
+    '''
+        Join new game specified by game_name for player "username"
+    '''
+    data = request.get_json()
+    username = data["username"]
+    game_name = data["game_name"]
+    if username == "" or game_name == "":
+        return "Username/Game Name is empty", 404
+
+    try:
+        game_controller.join_new_game(username, game_name)
+    except Exception as e:
+        return str(e), 400
+
+    game_details = {
+        "game_name": game_name,
+        "players": game_controller.get_game_details(game_name)
+    }
+
+    sock.emit('game_details', game_details)
+    return jsonify(game_details), 200
 
 
 if __name__ == '__main__':

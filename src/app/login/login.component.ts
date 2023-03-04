@@ -1,4 +1,7 @@
-import { Component } from '@angular/core';
+import { Component, ViewChild } from '@angular/core';
+import { FormBuilder, FormGroup, NgForm, Validators } from '@angular/forms';
+import { Router } from '@angular/router';
+import { CardsService } from '../services/cards.service';
 
 
 var ids = ["p1", "p2", "p3", "p4", "p5"]
@@ -20,60 +23,110 @@ function changeColor() {
 @Component({
   selector: 'app-login',
   templateUrl: './login.component.html',
-  styleUrls: ['./login.component.scss']
+  styleUrls: ['./login.component.scss'],
 })
 export class LoginComponent {
+  username: string;
+  gameName: string;
+  joinGame: boolean;
+  buttonType: string;
 
-  disabled: boolean;
+  userForm: FormGroup
+  joinGameForm: FormGroup
 
-  constructor() {
-    this.disabled = true
+  formFields: {[key: string]: any} = {
+    'username': '',
   }
 
-  validate(name: string) {
-    if(name == "") {
-      console.log("Name is empty")
+  validationMessages = {
+    'username': {
+      'required': 'Username is required'
+    }
+  }
+
+  // @ViewChild('joinElement') element: ElementRef;
+  @ViewChild('cform') userFormDirective: NgForm;
+  @ViewChild('ccform') joinGameFormDirective: NgForm;
+
+  constructor(private cardsService: CardsService,
+    private fb: FormBuilder,
+    private router: Router) {
+    this.createForm();
+  }
+
+  createForm() {
+    this.userForm = this.fb.group({
+      username: ['', Validators.required],
+    })
+
+    this.userForm.valueChanges.subscribe(data => this.onValueChanged(data));
+
+    this.joinGameForm = this.fb.group({
+      gameName: ['', Validators.required]
+    })
+  }
+
+  onValueChanged(data?: any) {
+    if(!this.userForm) {  return; }
+
+    const form = this.userForm;
+    let username = form.get('username')
+    if(username && username.dirty && !username.valid) {
+      for (const key in username.errors) {
+        if(username.errors.hasOwnProperty(key)) {
+          const messages = this.validationMessages['username']
+          this.formFields['username'] += messages[key] + ' ';
+        }
+      }
+    }
+
+    if(form.valid) {
+      let create = <HTMLInputElement>document.getElementById("create_game")
+      create.classList.remove('disabled')
+
+      let join = <HTMLInputElement>document.getElementById("join_game")
+      join.classList.remove("disabled")
     }
     else {
-      console.log("Name: ", name)
+      let create = <HTMLInputElement>document.getElementById("create_game")
+      create.classList.add('disabled')
+
+      let join = <HTMLInputElement>document.getElementById("join_game")
+      join.classList.add("disabled")
     }
   }
 
-  onSubmit() {
-    console.log("Submitted form")
-    let form = document.getElementById("userForm");
-    form?.addEventListener("submit", (e) => {
-      e.preventDefault();
-      let username = (<HTMLInputElement>document.getElementById("username")).value
-      this.validate(username)
+  onSubmit(buttonType: string) {
+    console.log("Submitted form. ButtonType: ", buttonType)
+    this.username = this.userForm.get('username')?.value;
+    console.log('Username: ', this.username)
+
+    if(buttonType == 'join') {
+      this.joinGame = true
+    }
+    else if(buttonType == 'create') {
+      this.cardsService.createGame(this.username).subscribe((data) => {
+        console.log(data)
+      })
+
+      this.router.navigate(['table']);
+    }
+  }
+
+  joinNewGame() {
+    console.log("Submitted form for joining game")
+
+    let gameName = this.joinGameForm.get('gameName')?.value
+    console.log('Game Name: ', gameName)
+
+    this.cardsService.joinGame(this.username, gameName).subscribe((data) => {
+      console.log(data)
     })
+    this.router.navigate(['table']);
   }
 
   ngOnInit() {
     setInterval(changeColor, 100)
-
-    let userForm = (<HTMLInputElement>document.getElementById("username"))
-    userForm?.addEventListener("change", (e) => {
-      e.preventDefault()
-      let val = userForm.value
-      if(val != "") {
-        this.disabled = false
-      }
-    })
-
-    let create = document.getElementById("create")
-    create?.addEventListener("click", (e) => {
-      e.preventDefault()
-      let username = (<HTMLInputElement>document.getElementById("username")).value
-      this.validate(username)
-    })
-
-    let join = document.getElementById("join")
-    join?.addEventListener("click", (e) => {
-      e.preventDefault()
-      let username = (<HTMLInputElement>document.getElementById("username")).value
-      this.validate(username)
-    })
   }
 
 }

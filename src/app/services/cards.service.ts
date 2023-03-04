@@ -1,19 +1,30 @@
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { catchError, Observable, of } from 'rxjs';
 import { baseURL } from '../shared/baseurl';
-import { io } from 'socket.io-client';
+import { io, Socket } from 'socket.io-client';
+import { ProcessHttpmsgService } from './process-httpmsg.service';
+
+const httpOptions = {
+  headers: new HttpHeaders({
+    'Content-Type': 'application/json'
+  })
+};
 
 @Injectable({
   providedIn: 'root'
 })
 export class CardsService {
   cards: {};
-  socket = io(baseURL);
+  socket: Socket;
+  gameDetails: {};
 
   constructor(
-    private httpClient: HttpClient) {
+    private httpClient: HttpClient,
+    private processMessage: ProcessHttpmsgService) {
       this.cards = {};
+      this.gameDetails = {};
+      this.socket = io(baseURL);
     }
 
   getCards(playerName: string): Observable<number[]> {
@@ -27,8 +38,7 @@ export class CardsService {
   }
 
   generateCards(numPlayers: number) {
-    // this.httpClient.post(baseURL + "cards?num_players=" + numPlayers.toString(), null)
-    //                .subscribe((cards) => this.cards = cards["cards"]);
+    console.log("Emit function called for generateCards")
     this.socket.emit('generate', numPlayers);
     return
   }
@@ -41,4 +51,36 @@ export class CardsService {
     })
     return pokerObservable
   }
+
+  createGame(username: string): Observable<any> {
+    let data = {
+      "username": username
+    }
+
+    return this.httpClient.post(baseURL + "create", data, httpOptions)
+           .pipe(catchError(this.processMessage.handleError))
+  }
+
+  joinGame(username: string, game_name: string): Observable<any> {
+    let data = {
+      "username": username,
+      "game_name": game_name
+    }
+
+    return this.httpClient.post(baseURL + "join", data, httpOptions)
+           .pipe(catchError(this.processMessage.handleError))
+  }
+ 
+  getGameDetails() {
+    console.log("Getting game details")
+    let gamesObservable = new Observable<any>((observer) => {
+      this.socket.on('game_details', (gameDetails) => {
+        console.log("Game details:", gameDetails)
+        observer.next(gameDetails)
+      })
+    })
+
+    return gamesObservable;
+  }
+
 }

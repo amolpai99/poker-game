@@ -1,20 +1,5 @@
 @import url('https://fonts.googleapis.com/css2?family=Caveat+Brush&family=Lakki+Reddy&family=Nanum+Pen+Script&family=Rock+Salt&display=swap');
 
-
-$lt-gray: #ddd;
-$background-dark: #512DA8;
-$background-light: #B8FFFE;
-$background-pale: #D1C4E9;
-$background-moredark: #4527A0;
-
-@mixin zero-margin($pad-up-down, $pad-left-right) {
-
-}
-
-.column {
-    position: relative;
-}
-
 .jumbotron {
     background-image: linear-gradient(to bottom, #00b3ff, #00fff7);
     width: 100%;
@@ -24,51 +9,65 @@ $background-moredark: #4527A0;
 
 }
 
-.texas {
+.title {
     font-family: 'Rock Salt', cursive;
     font-size: 2.5vw;
 
     @media screen and (max-width: 768px) {
         font-size: 5vw;
 	}
+
+    &--poker {
+        font-family: 'Lakki Reddy', cursive;
+        font-size: 4vw;
+        @media screen and (max-width: 768px) {
+            font-size: 10vw;
+        }
+    }
 }
 
-.poker {
-    font-family: 'Lakki Reddy', cursive;
-    font-size: 4vw;
-    @media screen and (max-width: 768px) {
-        font-size: 10vw;
-	}
-}
-
-.login {
+.form {
     background-color: #00fff7;
     border-left: 20px solid #00fff7;
     border-right: 20px solid #00fff7;
     height: 300px;
     font-family: 'Nanum Pen Script', cursive;
+
+    &--join_game {
+        height: 100px;
+    }
 }
 
-.username {
+.form-field {
     font-size: 1.5vw;
-    margin-left: 18%;
     margin-bottom: 20px;
     display: flex;
     align-items: center;
+
+    &--1 {
+        justify-content: center;
+    }
+
+    &--2 {
+        justify-content: space-evenly;
+    }
+}
+
+.form-subfield {
+    width: 20%;
+    display: inline-flex;
+    margin-left: 10px;
 }
 
 .input {
-    height: 30px;
-    width: 400px;
-    margin-left: 20px;
-    border-radius: 10px;
+    width: 250px;
+    border-radius: 20px;
     padding-left: 10px;
     border: 2px solid #00b3ff;
 }
 
-.input::placeholder {
-    font-family: 'Nanum Pen Script';
-    font-size: 20px;
+.disabled {
+    pointer-events: none;
 }
 
 input[type='text'] {
@@ -76,31 +75,48 @@ input[type='text'] {
     font-size: 24px;
 }
 
-.create {
+.create-join, .join {
     border: 5px solid #F6BE00;
-	box-shadow: rgba(0, 0, 0, 0.3) 0px 19px 38px, rgba(0, 0, 0, 0.22) 0px 15px 12px;
     background-color: #FFDF00;
     border-radius: 25px;
-    font-size: 2vw;
     font-family: 'Nanum Pen Script', cursive;
+    cursor: pointer;
+
+    &:hover {
+        background-color: #52D017;
+        border-radius: 30px;
+        border-color: #3F9B0B;
+        color: white;
+    }
+}
+
+.create-join {
+	box-shadow: rgba(0, 0, 0, 0.3) 0px 19px 38px, rgba(0, 0, 0, 0.22) 0px 15px 12px;
+    font-size: 1.5vw;
     padding-left: 10px;
     padding-right: 10px;
     padding-top: 5px;
     padding-bottom: 5px;
-    cursor: pointer;
+
+    &:hover {
+        font-size: 1.75vw;
+    }
 }
 
-.create:hover {
-    background-color: #52D017;
-    font-size: 2.5vw;
-    border-radius: 30px;
-    border-color: #3F9B0B;
-    color: white;
+.join {
+    font-size: 1.5vw;
+    padding-left: 10px;
+    padding-right: 10px;
+    margin-left: 10px;
+
+    &:hover {
+    font-size: 1.75vw;
+    }
 }
 
 .footer {
     background-image: linear-gradient(to bottom, #00fff7, #00b3ff);
     border-left: 20px solid #00fff7;
     border-right: 20px solid #00fff7;
-    height: calc(100vh - 500px);
+    height: calc(100vh - 600px);
 }

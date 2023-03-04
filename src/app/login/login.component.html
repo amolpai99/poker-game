@@ -4,8 +4,8 @@
 
     <div fxFlex="80%" class="jumbotron" fxLayout="column" fxLayoutAlign="end center">
         <h1>
-            <span class="texas">Texas Hold'Em </span>
-            <span class="poker">
+            <span class="title">Texas Hold'Em </span>
+            <span class="title--poker">
                 <span id="p1">P</span>
                 <span id="p2">O</span>
                 <span id="p3">K</span>
@@ -24,19 +24,49 @@
     <div fxFlex="10%">
     </div>
 
-    <div fxFlex="80%"  class="login">
-        <div fxLayout="row" class="username">
-            <h2>Gambler Identity?</h2>
-            <input class="input" id="username" type="text" placeholder="Create Username">
-        </div>
-        <div fxLayout='row'>
-            <div fxFlex="50%" fxLayout="column" fxLayoutAlign="center center">
-                <button type="submit" id="create" class="create" [disabled]="disabled">Create New Game</button>
+    <div fxFlex="80%"  class="form">
+        <form novalidate [formGroup]="userForm" #cform="ngForm" (ngSubmit)="onSubmit(buttonType)">
+            <div class="form-field form-field--1">
+                <h3>Gambler Identity?</h3>
+                <div class="form-subfield">
+                    <input class="input" formControlName="username" id="username" type="text" placeholder="Create Username">
+                </div>
             </div>
-            <div fxFlex="50%" fxLayout="column" fxLayoutAlign="center center">
-                <button type="submit" id="join" class="create" [disabled]="disabled">Join Existing Game</button>
+            <div class="form-field form-field--2">
+                <button type="submit" id="create_game"
+                        class="create-join disabled"
+                        [disabled]="userForm.invalid"
+                        (click)="onSubmit('create')">Create New Game</button>
+                <button type="submit" id="join_game"
+                        class="create-join disabled"
+                        [disabled]="userForm.invalid"
+                        (click)="onSubmit('join')">Join Existing Game</button>
+            </div>     
+        </form>
+    </div>
 
-            </div>
+    <div fxFlex="10%">
+    </div>
+</div>
+
+<div fxLayout="row">
+    <div fxFlex="10%">
+    </div>
+
+    <div fxFlex="80%" class="form form--join_game">
+        <div  *ngIf="joinGame">
+            <form novalidate [formGroup]="joinGameForm" #ccform="ngForm" (ngSubmit)="joinNewGame()">
+                <div class="form-field form-field--1">
+                    <h2>Game Name:</h2>
+                    <div class="form-subfield">
+                        <input class="input" formControlName="gameName" id="game_name" type="text" placeholder="Game Name">
+                    </div>
+                    <div>
+                        <button type="submit" id="join_id" class="join">Join</button>
+    
+                    </div>
+                </div>
+            </form>
         </div>
     </div>
 
