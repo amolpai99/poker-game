@@ -8,7 +8,7 @@ import { TableComponent } from '../table/table.component';
 const routes: Routes = [
   {path: 'login', component: LoginComponent},
   {path: 'table', component: TableComponent},
-  {path: '', redirectTo: 'login', pathMatch: 'full'}
+  {path: '', redirectTo: 'table', pathMatch: 'full'}
 ]
 
 

@@ -12,6 +12,8 @@ function randomIntFromInterval(min: number, max: number) { // min and max includ
 })
 export class HandComponent {
   @Input("player") playerName: string;
+  @Input("player_type") playerType: string;
+  @Input("open_hand") openHand: string = "false";
 
   cards: number[];
 

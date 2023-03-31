@@ -1,19 +1,19 @@
 $gutter: 10px;
-$font-md-size: 7px;
+$font-md-size: 10px;
 $font-size: 12px;
 
 $card-padding: 1px;
 $card-width: 100px;
 $card-height: 140px;
-$card-md-width: 50px;
-$card-md-height: 70px;
+$card-md-width: 80px;
+$card-md-height: 120px;
 $card-color-red: #e44145;
 
 .card {
 	font: $font-size 'Trebuchet MS';
 
-	width: $card-width;
-	height: $card-height;
+	// width: $card-width;
+	// height: $card-height;
 	@media screen and (max-width: 768px) {
 		width: $card-md-width;
 		font: $font-md-size 'Trebuchet MS';
@@ -21,8 +21,10 @@ $card-color-red: #e44145;
 	}
 
 	margin: $gutter;
-	box-shadow: 0 2px 4px rgba(0, 0, 0, 0.18);
+	box-shadow: 0 10px 10px rgba(0, 0, 0, 0.18);
 	display: flex;
+	background-color: white;
+	border-radius: 4px;
 	
 	&--heart, &--diamonds {
 		color: $card-color-red;
@@ -30,15 +32,51 @@ $card-color-red: #e44145;
 	}
 }
 
+.table_card {
+	width: 100px;
+	height: 140px;
+	font-size: 12px;
+
+	@media screen and (max-width: 1500px) {
+		width: 80px;
+		font: 10px 'Trebuchet MS';
+		height: 120px;
+	}
+}
+
+.primary_card {
+	width: 100px;
+	height: 140px;
+	font-size: 12px;
+
+	@media screen and (max-width: 1500px) {
+		width: 75px;
+		font: 10px 'Trebuchet MS';
+		height: 110px;
+	}
+}
+
+.secondary_card {
+	width: 50px;
+	height: 70px;
+	font-size: 6px;
+
+	@media screen and (max-width: 1500px) {
+		width: 40px;
+		font: 10px 'Trebuchet MS';
+		height: 60px;
+	}
+}
+
 .card_value {
-	width: 5px;
+	width: 10px;
 	letter-spacing: 0px;
 	top: $card-padding;
 	left: $card-padding;
 }
 
 .card_value_rotated {
-	width: 5px;
+	width: 10px;
 	bottom: $card-padding;
 	right: $card-padding;
 	transform: rotate(180deg)
@@ -93,6 +131,10 @@ $card-color-red: #e44145;
 	.card--diamonds &:before {
 		content: '♦';
 	}
+}
+
+.card__symbol_empty {
+	text-align: center;
 }
 
 .card__face {

@@ -1,4 +1,4 @@
-<div class="card card--{{cardSuit.key}}" *ngIf="isFrontCard" (click)="toggleFrontBack()">
+<div [ngClass]="getCardClass()" class="card card--{{cardSuit.key}}" *ngIf="isFrontCard" (click)="toggleFrontBack()">
     <div class="card_value">{{cardSelected.value}}<br>{{cardSuit.value}}</div>
     <div class="card__column" *ngFor="let class of cardSelected.classes">
         <div *ngFor="let symbol of class">
@@ -11,7 +11,7 @@
     <div class="card_value_rotated">{{cardSelected.value}}<br>{{cardSuit.value}}</div>
 </div>
 
-<div class="card" *ngIf="!isFrontCard" (click)="toggleFrontBack()">
+<div [ngClass]="getCardClass()" class="card" *ngIf="!isFrontCard" (click)="toggleFrontBack()">
     <img class="card_back" src="../../assets/images/card_back.jpeg">
 </div>
 

@@ -1,41 +1,254 @@
-.table {
-    text-align: center;
-    column-width: fit-content;
+* {
 }
 
+// .table {
+//     text-align: center;
+//     column-width: fit-content;
+// }
+
 .table_hand {
-    margin: auto;
+    position: relative;
 }
 
 .player_hand {
-    display: flex;
-    justify-content: space-evenly;
+    position: absolute;
+    bottom: -75%;
+    right: 0;
+    z-index: 2;
 }
 
-.player_name {
+.player1 {
+    &_title {
+        right: -10%;
+    }
+
+    &_cards {
+        position: absolute;
+        right: -50%;
+        bottom: -75%;
+        z-index: 2;
+    }
+}
+
+.player2 {
+    &_title {
+        bottom: 0;
+        right: 10%;
+    }
+
+    &_cards {
+        position: absolute;
+        bottom: -75%;
+        right: 0;
+        z-index: 2;
+    }
+}
+
+.player3 {
+    &_title {
+        bottom: 0;
+        left: 5%;
+    }
+
+    &_cards {
+        position: absolute;
+        bottom: -75%;
+        left: 0;
+        z-index: 2;
+    }
+}
+
+.player4 {
+    &_title {
+        left: -10%
+    }
+
+    &_cards {
+        position: absolute;
+        left: -50%;
+        bottom: -75%;
+        z-index: 2;
+    }
+}
+
+.player5 {
+    &_title {
+        left: 0
+    }
+
+    &_cards {
+        position: absolute;
+        left: -40%;
+        z-index: 2;
+    }
+}
+
+.player6 {
+    &_title {
+        left: -10%
+    }
+
+    &_cards {
+        position: absolute;
+        left: -50%;
+        top: -75%;
+        z-index: 2;
+    }
+}
+
+.player7 {
+    &_title {
+        top: 0;
+        right: 10%;
+    }
+
+    &_cards {
+        position: absolute;
+        right: 0;
+        top: -75%;
+        z-index: 2;
+    }
+}
+
+.player8 {
+    &_title {
+        top: 0
+    }
+
+    &_cards {
+        position: absolute;
+        top: -75%;
+        z-index: 2;
+    }
+}
+
+.player9 {
+    &_title {
+        top: 0;
+        left: 5%;
+    }
+
+    &_cards {
+        position: absolute;
+        left: 0;
+        top: -75%;
+        z-index: 2;
+    }
+}
+
+.player10 {
+    &_title {
+        right: -10%;
+    }
+
+    &_cards {
+        position: absolute;
+        right: -50%;
+        top: -75%;
+        z-index: 2;
+    }
+}
+
+.player11 {
+    &_title {
+        right: 0;
+    }
+
+    &_cards {
+        position: absolute;
+        right: -40%;
+        z-index: 2;
+    }
+}
+
+.dealer {
+    &_title {
+        bottom: 0;
+    }
+}
+
+// .player_name {
+//     display: flex;
+//     justify-content: center;
+//     align-items: center;
+//     font-size: 1.2em;
+// }
+
+// .winner {
+//     display: flex;
+//     align-items: center;
+//     justify-content: center;
+// }
+
+// .button {
+//     background-color: white;
+//     margin: 2px;
+//     padding: 10px;
+//     border-radius: 25px;
+// 	box-shadow: 0 2px 4px rgba(0, 0, 0, 0.18);
+//     font-family: "Comic Sans MS", sans-serif;
+
+// }
+
+// .button:hover {
+//     background-color: #E3E3E3;
+//     cursor: pointer;
+// }
+
+.screen {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+}
+
+.row1, .row2 {
+    position: relative;
+    width: 100%;
     display: flex;
-    justify-content: center;
+
+    &--center {
+        align-items: center;
+        justify-content: center;
+    }
+}
+
+.row1 {
+    height: 20%;
+}
+
+.row2 {
+    height: 60%;
+}
+
+.player {
+    position: relative;
+    height: 100%;
+    width: 20%;
+
+    &--center {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+}
+
+.table {
+    position: relative;
+    height: 100%;
+    width: 60%;
+
+    display: flex;
     align-items: center;
-    font-size: 1.2em;
-}
-
-.winner {
-    display: flex;
-    align-items: center;
     justify-content: center;
-}
 
-.button {
-    background-color: white;
-    margin: 2px;
-    padding: 10px;
-    border-radius: 25px;
-	box-shadow: 0 2px 4px rgba(0, 0, 0, 0.18);
-    font-family: "Comic Sans MS", sans-serif;
+    .table_image {
+        position: absolute;
+        width: 100%;
+        height: 100%;
+    }
 
 }
 
-.button:hover {
-    background-color: #E3E3E3;
-    cursor: pointer;
+h2 {
+    position: absolute;
 }
