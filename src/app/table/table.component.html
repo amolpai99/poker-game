@@ -28,15 +28,13 @@
         <div class="player">
         </div>
         <div class="player">
-            <h2 class="player2_title">Player 2</h2>
-            <app-hand class="player2_cards" player="player1" player_type="secondary"></app-hand>
+            <h2  class="player6_title">{{players[4]}}</h2>
         </div>
         <div class="player player--center">
             <h2 class="dealer_title">Dealer</h2>
         </div>
         <div class="player">
-            <app-hand class="player3_cards" player="player1" player_type="secondary"></app-hand>
-            <h2 class="player3_title">Player 3</h2>
+            <h2 class="player7_title">{{players[5]}}</h2>
         </div>
         <div class="player">
         </div>
@@ -44,51 +42,53 @@
     <div class="row2">
         <div class="player">
             <div class="row1 row1--center">
-                <h2 class="player1_title">Player1</h2>
-                <app-hand class="player1_cards" player="player1" player_type="secondary"></app-hand>
+                <h2 class="player5_title">{{players[3]}}</h2>
             </div>
             <div class="row2 row2--center">
-                <h2 class="player11_title">Player 11</h2>
-                <app-hand class="player11_cards" player="player1" player_type="secondary"></app-hand>
+                <h2 class="player4_title">{{players[2]}}</h2>
             </div>
             <div class="row1 row1--center">
-                <h2 class="player10_title">Player10</h2>
-                <app-hand class="player10_cards" player="player1" player_type="secondary"></app-hand>
+                <h2 class="player3_title">{{players[1]}}</h2>
             </div>
         </div>
         <div class="table">
             <img class="table_image" src="../../assets/images/result.png">
+            <app-hand class="player1_cards" player="{{primaryPlayer}}" player_type="primary" open_hand="true"></app-hand>
+            <app-hand class="player2_cards" player="{{players[0]}}"></app-hand>
+            <app-hand class="player3_cards" player="{{players[1]}}"></app-hand>
+            <app-hand class="player4_cards" player="{{players[2]}}"></app-hand>
+            <app-hand class="player5_cards" player="{{players[3]}}"></app-hand>
+            <app-hand class="player6_cards" player="{{players[4]}}"></app-hand>
+            <app-hand class="player7_cards" player="{{players[5]}}"></app-hand>
+            <app-hand class="player8_cards" player="{{players[6]}}"></app-hand>
+            <app-hand class="player9_cards" player="{{players[7]}}"></app-hand>
+            <app-hand class="player10_cards" player="{{players[8]}}"></app-hand>
+            <app-hand class="player11_cards" player="{{players[9]}}"></app-hand>
             <app-hand class="table_hand" player="table" player_type="table" open_hand="true"></app-hand>
         </div>
         <div class="player">
             <div class="row1 row1--center">
-                <h2 class="player4_title">Player4</h2>
-                <app-hand class="player4_cards" player="player1" player_type="secondary"></app-hand>
+                <h2 class="player8_title">{{players[6]}}</h2>
             </div>
             <div class="row2 row2--center">
-                <h2 class="player5_title">Player 5</h2>
-                <app-hand class="player5_cards" player="player1" player_type="secondary"></app-hand>
+                <h2 class="player9_title">{{players[7]}}</h2>
             </div>
             <div class="row1 row1--center">
-                <h2 class="player6_title">Player6</h2>
-                <app-hand class="player6_cards" player="player1" player_type="secondary"></app-hand>
+                <h2 class="player10_title">{{players[8]}}</h2>
             </div>
         </div>
     </div>
-    <div class="row1">
+    <div class="row3">
         <div class="player">
         </div>
         <div class="player">
-            <h2 class="player7_title">Player 7</h2>
-            <app-hand class="player7_cards" player="player1" player_type="secondary"></app-hand>
+            <h2 class="player2_title">{{players[0]}}</h2>
         </div>
         <div class="player player--center">
-            <h2 class="player8_title">Player 8</h2>
-            <app-hand class="player8_cards" player="player1" player_type="primary" open_hand="true"></app-hand>
+            <h2 class="player1_title">{{primaryPlayer}}</h2>
         </div>
         <div class="player">
-            <h2 class="player9_title">Player 9</h2>
-            <app-hand class="player9_cards" player="player1" player_type="secondary"></app-hand>
+            <h2 class="player11_title">{{players[9]}}</h2>
         </div>
         <div class="player">
         </div>

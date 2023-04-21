@@ -1,7 +1,8 @@
 import { Component, ViewChild } from '@angular/core';
 import { FormBuilder, FormGroup, NgForm, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
-import { CardsService } from '../services/cards.service';
+import { ClientService } from '../services/client.service';
+import { GameDetails, GameService } from '../services/game.service';
 
 
 var ids = ["p1", "p2", "p3", "p4", "p5"]
@@ -26,8 +27,7 @@ function changeColor() {
   styleUrls: ['./login.component.scss'],
 })
 export class LoginComponent {
-  username: string;
-  gameName: string;
+  playerName: string;
   joinGame: boolean;
   buttonType: string;
 
@@ -35,20 +35,20 @@ export class LoginComponent {
   joinGameForm: FormGroup
 
   formFields: {[key: string]: any} = {
-    'username': '',
+    'playerName': '',
   }
 
   validationMessages = {
-    'username': {
-      'required': 'Username is required'
+    'playerName': {
+      'required': 'playerName is required'
     }
   }
 
-  // @ViewChild('joinElement') element: ElementRef;
   @ViewChild('cform') userFormDirective: NgForm;
   @ViewChild('ccform') joinGameFormDirective: NgForm;
 
-  constructor(private cardsService: CardsService,
+  constructor(private client: ClientService,
+    private gameService: GameService,
     private fb: FormBuilder,
     private router: Router) {
     this.createForm();
@@ -56,13 +56,13 @@ export class LoginComponent {
 
   createForm() {
     this.userForm = this.fb.group({
-      username: ['', Validators.required],
+      playerName: ['', Validators.required],
     })
 
     this.userForm.valueChanges.subscribe(data => this.onValueChanged(data));
 
     this.joinGameForm = this.fb.group({
-      gameName: ['', Validators.required]
+      gameId: ['', Validators.required]
     })
   }
 
@@ -70,12 +70,12 @@ export class LoginComponent {
     if(!this.userForm) {  return; }
 
     const form = this.userForm;
-    let username = form.get('username')
-    if(username && username.dirty && !username.valid) {
-      for (const key in username.errors) {
-        if(username.errors.hasOwnProperty(key)) {
-          const messages = this.validationMessages['username']
-          this.formFields['username'] += messages[key] + ' ';
+    let playerName = form.get('playerName')
+    if(playerName && playerName.dirty && !playerName.valid) {
+      for (const key in playerName.errors) {
+        if(playerName.errors.hasOwnProperty(key)) {
+          const messages = this.validationMessages['playerName']
+          this.formFields['playerName'] += messages[key] + ' ';
         }
       }
     }
@@ -97,32 +97,59 @@ export class LoginComponent {
   }
 
   onSubmit(buttonType: string) {
-    console.log("Submitted form. ButtonType: ", buttonType)
-    this.username = this.userForm.get('username')?.value;
-    console.log('Username: ', this.username)
+    this.playerName = this.userForm.get('playerName')?.value;
 
     if(buttonType == 'join') {
       this.joinGame = true
     }
     else if(buttonType == 'create') {
-      this.cardsService.createGame(this.username).subscribe((data) => {
-        console.log(data)
-      })
+      let loginDetails = {
+        "player_name": this.playerName
+      }
+      this.client.createOrJoinGame(loginDetails).subscribe((data) => {
+        let gameId = data["game_id"]
 
-      this.router.navigate(['table']);
+        let gameDetails: GameDetails = {
+          gameId: gameId,
+          primaryPlayer: this.playerName,
+          isCreator: true,
+          players: data["game_details"]["players"]
+        }
+
+        this.gameService.gameDetails = gameDetails
+
+        let route = "table/" + gameId;
+        this.router.navigate([route]);
+      })
     }
   }
 
   joinNewGame() {
-    console.log("Submitted form for joining game")
+    let gameId = this.joinGameForm.get('gameId')?.value
 
-    let gameName = this.joinGameForm.get('gameName')?.value
-    console.log('Game Name: ', gameName)
+    let loginDetails = {
+      "player_name": this.playerName,
+      "join_game": true,
+      "game_id": gameId
+    }
+    this.client.createOrJoinGame(loginDetails).subscribe({
+      next: (data) => {
+        let gameDetails: GameDetails = {
+          gameId: gameId,
+          primaryPlayer: this.playerName,
+          isCreator: false,
+          players: data["game_details"]["players"]
+        }
 
-    this.cardsService.joinGame(this.username, gameName).subscribe((data) => {
-      console.log(data)
+        this.gameService.gameDetails = gameDetails
+
+        let route = "table/" + gameId;
+        this.router.navigate([route]);
+      },
+      error: (err) => {
+        console.log("Game with name", gameId, "not found: ", err)
+      }
     })
-    this.router.navigate(['table']);
   }
 
   ngOnInit() {

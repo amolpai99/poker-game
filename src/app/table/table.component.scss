@@ -19,110 +19,136 @@
 
 .player1 {
     &_title {
-        right: -10%;
+        top: 0
     }
 
     &_cards {
         position: absolute;
-        right: -50%;
-        bottom: -75%;
+        bottom: 0;
         z-index: 2;
     }
 }
 
 .player2 {
     &_title {
-        bottom: 0;
+        top: 0;
         right: 10%;
     }
 
     &_cards {
         position: absolute;
-        bottom: -75%;
-        right: 0;
+        bottom: 10%;
+        left: 20%;
         z-index: 2;
     }
 }
 
 .player3 {
     &_title {
-        bottom: 0;
-        left: 5%;
+        right: -10%;
     }
 
     &_cards {
         position: absolute;
-        bottom: -75%;
-        left: 0;
+        bottom: 18%;
+        left: 5%;
         z-index: 2;
     }
 }
 
 .player4 {
     &_title {
-        left: -10%
+        right: 0;
     }
 
     &_cards {
         position: absolute;
-        left: -50%;
-        bottom: -75%;
+        left: 2%;
         z-index: 2;
     }
 }
 
 .player5 {
     &_title {
-        left: 0
+        bottom: -20%;
+        right: -20%;
     }
 
     &_cards {
         position: absolute;
-        left: -40%;
-        z-index: 2;
+        top: 18%;
+        left: 5%;
+        z-index: 3;
     }
 }
 
 .player6 {
     &_title {
-        left: -10%
+        bottom: 0;
+        right: 10%;
     }
 
     &_cards {
         position: absolute;
-        left: -50%;
-        top: -75%;
+        top: 10%;
+        left: 20%;
         z-index: 2;
     }
 }
 
 .player7 {
     &_title {
-        top: 0;
-        right: 10%;
+        bottom: 0;
+        left: 5%;
     }
 
     &_cards {
         position: absolute;
-        right: 0;
-        top: -75%;
+        top: 10%;
+        right: 22%;
         z-index: 2;
     }
 }
 
 .player8 {
     &_title {
-        top: 0
+        bottom: -20%;
+        left: -20%;
     }
 
     &_cards {
         position: absolute;
-        top: -75%;
+        top: 18%;
+        right: 5%;
         z-index: 2;
     }
 }
 
 .player9 {
+    &_title {
+        left: 0
+    }
+
+    &_cards {
+        position: absolute;
+        right: 2%;
+    }
+}
+
+.player10 {
+    &_title {
+        left: -10%
+    }
+
+    &_cards {
+        position: absolute;
+        bottom: 18%;
+        right: 5%;
+        z-index: 2;
+    }
+}
+
+.player11 {
     &_title {
         top: 0;
         left: 5%;
@@ -130,33 +156,8 @@
 
     &_cards {
         position: absolute;
-        left: 0;
-        top: -75%;
-        z-index: 2;
-    }
-}
-
-.player10 {
-    &_title {
-        right: -10%;
-    }
-
-    &_cards {
-        position: absolute;
-        right: -50%;
-        top: -75%;
-        z-index: 2;
-    }
-}
-
-.player11 {
-    &_title {
-        right: 0;
-    }
-
-    &_cards {
-        position: absolute;
-        right: -40%;
+        bottom: 10%;
+        right: 22%;
         z-index: 2;
     }
 }
@@ -167,41 +168,13 @@
     }
 }
 
-// .player_name {
-//     display: flex;
-//     justify-content: center;
-//     align-items: center;
-//     font-size: 1.2em;
-// }
-
-// .winner {
-//     display: flex;
-//     align-items: center;
-//     justify-content: center;
-// }
-
-// .button {
-//     background-color: white;
-//     margin: 2px;
-//     padding: 10px;
-//     border-radius: 25px;
-// 	box-shadow: 0 2px 4px rgba(0, 0, 0, 0.18);
-//     font-family: "Comic Sans MS", sans-serif;
-
-// }
-
-// .button:hover {
-//     background-color: #E3E3E3;
-//     cursor: pointer;
-// }
-
 .screen {
     position: absolute;
     width: 100%;
     height: 100%;
 }
 
-.row1, .row2 {
+.row1, .row2, .row3 {
     position: relative;
     width: 100%;
     display: flex;
@@ -213,11 +186,15 @@
 }
 
 .row1 {
-    height: 20%;
+    height: 15%;
 }
 
 .row2 {
     height: 60%;
+}
+
+.row3 {
+    height: 25%;
 }
 
 .player {

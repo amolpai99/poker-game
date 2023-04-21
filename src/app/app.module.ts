@@ -15,9 +15,10 @@ import { AppComponent } from './app.component';
 import { CardComponent } from './card/card.component';
 import { HandComponent } from './hand/hand.component';
 import { TableComponent } from './table/table.component';
-import { CardsService } from './services/cards.service';
 import { baseURL } from './shared/baseurl';
 import { LoginComponent } from './login/login.component';
+import { ClientService } from './services/client.service';
+import { GameService } from './services/game.service';
 
 @NgModule({
   declarations: [
@@ -41,7 +42,8 @@ import { LoginComponent } from './login/login.component';
     MatInputModule
   ],
   providers: [
-    CardsService,
+    ClientService,
+    GameService,
     { provide: 'BaseURL', useValue: baseURL }
   ],
   bootstrap: [AppComponent]

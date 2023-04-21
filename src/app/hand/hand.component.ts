@@ -1,5 +1,5 @@
 import { Component, Inject, Input } from '@angular/core';
-import { CardsService } from '../services/cards.service';
+import { ClientService } from '../services/client.service';
 
 function randomIntFromInterval(min: number, max: number) { // min and max included 
   return Math.floor(Math.random() * (max - min + 1) + min)
@@ -12,20 +12,19 @@ function randomIntFromInterval(min: number, max: number) { // min and max includ
 })
 export class HandComponent {
   @Input("player") playerName: string;
-  @Input("player_type") playerType: string;
+  @Input("player_type") playerType: string = "secondary";
   @Input("open_hand") openHand: string = "false";
 
   cards: number[];
 
   constructor(
-    private cardsService: CardsService) {
+    private client: ClientService) {
   }
 
   ngOnInit() {
-    this.cardsService.getCards(this.playerName).subscribe({
+    this.client.getCards().subscribe({
       next: (cards) => {
-        console.log("Player Name: ", this.playerName, "Cards:", cards)
-        this.cards = cards
+        this.cards = cards[this.playerName]
       }}
     );
   }
