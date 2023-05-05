@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { Observable } from 'rxjs';
+import { BehaviorSubject, Observable } from 'rxjs';
 import { io, Socket } from 'socket.io-client';
 import { baseURL } from '../shared/baseurl';
 
@@ -8,16 +8,11 @@ import { baseURL } from '../shared/baseurl';
 })
 export class GameService {
   private _gameDetails: GameDetails;
-  socket: Socket;
 
   constructor() {
   }
 
-  set gameDetails(gameDetails: GameDetails) {
-    this._gameDetails = gameDetails
-    this.socket = io(baseURL + this.gameId)
-  }
-
+  /* <----------- GETTERS -----------> */
   // Get the game name property
   get gameId(): string {
     return this._gameDetails.gameId;
@@ -25,27 +20,26 @@ export class GameService {
   
   // Get the name of the primary player
   get playerName(): string {
-    return this._gameDetails.primaryPlayer;
+    return this._gameDetails.player.name;
   }
 
-  get players(): string[] {
-    return this._gameDetails.players;
+  get playerId(): string {
+    return this._gameDetails.player.id;
   }
 
+  // Get all player names
+  get players(): any[] {
+    return this._gameDetails.allPlayers;
+  }
+
+  // Get if the player is creator of game
   get isCreator(): boolean {
     return this._gameDetails.isCreator;
   }
 
-  onNewPlayerJoined(): Observable<string> {
-    let obs = new Observable<string>((observer) => {
-      this.socket.on("new_player", (data) => {
-        console.log("New player joined: ", data)
-        this._gameDetails.players.push(this.playerName)
-        observer.next(data["player_name"])
-      })
-    })
-
-    return obs
+  /* <----------- SETTERS -----------> */
+  set gameDetails(gameDetails: GameDetails) {
+    this._gameDetails = gameDetails
   }
 
 }
@@ -53,7 +47,7 @@ export class GameService {
 
 export class GameDetails {
   gameId: string;
-  primaryPlayer: string;
+  player: any;
   isCreator: boolean;
-  players: string[];
+  allPlayers: any[];
 }

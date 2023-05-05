@@ -108,15 +108,7 @@ export class LoginComponent {
       }
       this.client.createOrJoinGame(loginDetails).subscribe((data) => {
         let gameId = data["game_id"]
-
-        let gameDetails: GameDetails = {
-          gameId: gameId,
-          primaryPlayer: this.playerName,
-          isCreator: true,
-          players: data["game_details"]["players"]
-        }
-
-        this.gameService.gameDetails = gameDetails
+        this.populateData(gameId, true, data)
 
         let route = "table/" + gameId;
         this.router.navigate([route]);
@@ -134,14 +126,7 @@ export class LoginComponent {
     }
     this.client.createOrJoinGame(loginDetails).subscribe({
       next: (data) => {
-        let gameDetails: GameDetails = {
-          gameId: gameId,
-          primaryPlayer: this.playerName,
-          isCreator: false,
-          players: data["game_details"]["players"]
-        }
-
-        this.gameService.gameDetails = gameDetails
+        this.populateData(gameId, false, data)
 
         let route = "table/" + gameId;
         this.router.navigate([route]);
@@ -150,6 +135,39 @@ export class LoginComponent {
         console.log("Game with name", gameId, "not found: ", err)
       }
     })
+  }
+
+  populateData(gameId: string, isCreator: boolean, data: any) {
+    let allPlayers: any = {};
+    let mainPlayer: any = {};
+    for(let player in data["game_details"]["players"]) {
+      let playerData =  data["game_details"]["players"][player]
+      allPlayers[player] = {
+        name: playerData["name"],
+        cards: playerData["cards"]
+      }
+
+      if(playerData["name"] == this.playerName) {
+        mainPlayer = {
+          id: player,
+          name: playerData["name"],
+          cards: playerData["cards"]
+        }
+      }
+    }
+
+    let gameDetails: GameDetails = {
+      gameId: gameId,
+      player: mainPlayer,
+      isCreator: isCreator,
+      allPlayers: allPlayers,
+    }
+    console.log("Game details: ", gameDetails)
+
+    this.gameService.gameDetails = gameDetails
+    this.client.setSocket(gameId)
+
+    return
   }
 
   ngOnInit() {

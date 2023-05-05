@@ -1,9 +1,6 @@
 import { Component, Inject, Input } from '@angular/core';
 import { ClientService } from '../services/client.service';
-
-function randomIntFromInterval(min: number, max: number) { // min and max included 
-  return Math.floor(Math.random() * (max - min + 1) + min)
-}
+import { GameService } from '../services/game.service';
 
 @Component({
   selector: 'app-hand',
@@ -11,22 +8,52 @@ function randomIntFromInterval(min: number, max: number) { // min and max includ
   styleUrls: ['./hand.component.scss']
 })
 export class HandComponent {
-  @Input("player") playerName: string;
+  @Input("player") playerId: string;
   @Input("player_type") playerType: string = "secondary";
-  @Input("open_hand") openHand: string = "false";
+
+  openCards: string[] = [];
 
   cards: number[];
 
   constructor(
-    private client: ClientService) {
+    private client: ClientService,
+    private gameService: GameService) {      
   }
 
   ngOnInit() {
-    this.client.getCards().subscribe({
-      next: (cards) => {
-        this.cards = cards[this.playerName]
-      }}
-    );
-  }
+    console.log("ngInit called: ", this.playerId, this.playerType)
+    switch(this.playerType) {
+      case "secondary": 
+        this.openCards = ["false", "false"]
+        break
+      case "primary":
+        this.openCards = ["true", "true"]
+        break
+      case "table":
+        this.openCards = ["true", "true", "true", "false", "false"]
+    }
 
+    this.client.getCards().subscribe((playerDetails) => {
+      this.cards = playerDetails[this.playerId]["cards"]
+    });
+
+    if(this.playerId == "player0") {
+      this.client.openTableCards().subscribe((data) => {
+        if("open_turn" in data) {
+          this.openCards[3] = "true"
+        }
+        else if("open_river" in data) {
+          this.openCards[3] = "true"
+          this.openCards[4] = "true"
+        }
+      })
+    }
+    else {
+      this.client.openPlayerCards().subscribe((players) => {
+        if(players.indexOf(this.playerId) != -1) {
+          this.openCards = ["true", "true"]
+        }
+      })
+    }
+  }
 }

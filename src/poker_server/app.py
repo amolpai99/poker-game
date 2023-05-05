@@ -31,31 +31,33 @@ class GenericNamespace(Namespace):
         '''
         print("Connection successful with game: ", self.game_id)
 
-    def on_generate_cards(self):
+    def on_generate_cards(self, data):
         '''
-            Socket event for generating the cards
-            The server will generate new cards and emit them to all the clients
-            connected to the socket. It will also find the winner of the poker game
-            TODO: Separate the logic of finding winner to separate function since
-                the winner can be found only after all rounds of betting are done
+            Generate cards for all players
         '''
-        cards = game_controller.generate_cards(self.game_id)
-        sock.emit('get_cards', cards, namespace=self.namespace)
+        print("Generating cards for game: ", self.game_id)
+        new_round = data.get("new_round", False) if data else False
 
-# @sock.on('generate')
-# def get_cards(game_id):
-#     '''
-#         Socket event for generating the cards
-#         The server will generate new cards and emit them to all the clients
-#         connected to the socket. It will also find the winner of the poker game
-#         TODO: Separate the logic of finding winner to separate function since
-#               the winner can be found only after all rounds of betting are done
-#     '''
-#     cards = game_controller.generate_cards(game_id)
-#     sock.emit('get_cards', cards)
-    # poker_cls = PokerHand()
-    # winners, winning_hand = poker_cls.get_winner(ALL_CARDS)
-    # sock.emit('winner', {"winners": winners, "winning_hand": winning_hand["sequence"].name})
+        # Generate cards for all players
+        game_controller.generate_cards(self.game_id, new_round=new_round)
+
+        # Send player details to all connected clients
+        player_details = game_controller.get_game_details(self.game_id)["players"]
+        sock.emit('get_cards', player_details, namespace=self.namespace)
+        return {"status": "success"}
+
+    def on_open_cards(self):
+        print("Opening cards")
+        data = game_controller.open_cards(self.game_id)
+
+        print(data)
+        if "table" in data:
+            sock.emit('open_table_cards', data["table"], namespace=self.namespace)
+        else:
+            sock.emit('open_player_cards', data["players"], namespace=self.namespace)
+
+        return {"status": "success"}
+
 
 @app.route("/game", methods=["POST"])
 def create_or_join_game():
@@ -72,10 +74,10 @@ def create_or_join_game():
             return "Game name cannot be none when joining game", 400
 
         try:
-            game_controller.join_new_game(player_name, game_id)
+            player_id = game_controller.join_new_game(player_name, game_id)
 
             namespace = "/" + game_id
-            sock.emit("new_player", {"player_name": player_name}, namespace=namespace)
+            sock.emit("new_player", {"name": player_name, "id": player_id}, namespace=namespace)
         except Exception as ex:
             return str(ex), 400
 

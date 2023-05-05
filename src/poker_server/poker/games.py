@@ -76,12 +76,23 @@ class Games():
         id2 = ''.join(random.choice(letters) for i in range(4))
         game_id = id1 + "-" + id2
 
+        player_details = {}
+        player_details["player0"] = {
+            "name": "table",
+            "cards": None
+        }
+
+        player_details["player1"] = {
+            "name": username,
+            "cards": None
+        }
+
         new_game = {
             "game_name": game_name,
-            "players": [username],
-            "current_round_cards": None,
+            "num_players": 1,
+            "players": player_details,
             "selected_card_numbers": [],
-            "round_num": 0
+            "round_num": 0,
         }
         self.games_list[game_id] = new_game
 
@@ -95,11 +106,15 @@ class Games():
         if game_id not in self.games_list:
             raise Exception("Game %s not present" % (game_id))
 
-        if self.games_list[game_id]["players"]:
-            self.games_list[game_id]["players"].append(player_name)
-        else:
-            self.games_list[game_id]["players"] = [player_name]
-        return True
+        game_details = self.games_list[game_id]
+        num_players = game_details["num_players"]
+        player_id = "player" + str(num_players + 1)
+        game_details["players"][player_id] = {
+            "name": player_name,
+            "cards": None
+        }
+        game_details["num_players"] = num_players+1
+        return player_id
 
     def get_game_details(self, game_id):
         '''
@@ -113,11 +128,9 @@ class Games():
         '''
         card_numbers = list(range(1,53))
 
-        current_game_details = self.games_list[game_id]
-        player_names = current_game_details["players"]
-        selected_cards_from_deck = current_game_details["selected_card_numbers"]
-
-        current_cards = current_game_details["current_round_cards"]
+        game_details = self.games_list[game_id]
+        player_details = game_details["players"]
+        selected_cards_from_deck = game_details["selected_card_numbers"]
 
         def get_cards(num_cards):
             player_cards = []
@@ -129,20 +142,27 @@ class Games():
                 player_cards.append(num)
             return player_cards
 
-        if current_cards is None or new_round:
-            current_cards = {}
-            table_cards = get_cards(5)
-            current_cards["table"] = table_cards
-            for name in player_names:
-                player_cards = get_cards(2)
-                current_cards[name] = player_cards
-        else:
-            for name in player_names:
-                if name in current_cards:
-                    continue
-                player_cards = get_cards(2)
-                current_cards[name] = player_cards
+        for player in player_details:
+            if not new_round and player_details[player]["cards"] is not None:
+                continue
+            if player == "player0": # table cards
+                cards = get_cards(5)
+            else:
+                cards = get_cards(2)
+            player_details[player]["cards"] = cards
 
-        current_game_details["current_round_cards"] = current_cards
-        self.games_list[game_id] = current_game_details
-        return current_cards
+        return "success"
+
+    def open_cards(self, game_id):
+        game_details = self.games_list[game_id]
+        round_num = game_details["round_num"]
+        if round_num == 0:
+            data = {"table": {"open_turn": True}}
+        elif round_num == 1:
+            data = {"table": {"open_river": True}}
+        else:
+            data = {"players": list(game_details["players"].keys())}
+
+        round_num = round_num + 1
+        game_details["round_num"] = round_num
+        return data

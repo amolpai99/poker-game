@@ -12,8 +12,6 @@ $card-color-red: #e44145;
 .card {
 	font: $font-size 'Trebuchet MS';
 
-	// width: $card-width;
-	// height: $card-height;
 	@media screen and (max-width: 768px) {
 		width: $card-md-width;
 		font: $font-md-size 'Trebuchet MS';
@@ -33,38 +31,56 @@ $card-color-red: #e44145;
 }
 
 .table_card {
-	width: 100px;
-	height: 140px;
-	font-size: 12px;
-
-	@media screen and (max-width: 1500px) {
-		width: 80px;
-		font: 10px 'Trebuchet MS';
-		height: 120px;
+	&_front, &_back {
+		width: 100px;
+		height: 140px;
+		font-size: 12px;
+	
+		@media screen and (max-width: 1500px) {
+			width: 80px;
+			font: 10px 'Trebuchet MS';
+			height: 120px;
+		}
 	}
 }
 
 .primary_card {
-	width: 100px;
-	height: 140px;
-	font-size: 12px;
+	&_front, &_back {
+		width: 100px;
+		height: 140px;
+		font-size: 12px;
 
-	@media screen and (max-width: 1500px) {
-		width: 75px;
-		font: 10px 'Trebuchet MS';
-		height: 110px;
+		@media screen and (max-width: 1500px) {
+			width: 75px;
+			font: 10px 'Trebuchet MS';
+			height: 110px;
+		}
 	}
 }
 
 .secondary_card {
-	width: 50px;
-	height: 70px;
-	font-size: 6px;
+	&_front {
+		width: 80px;
+		height: 110px;
+		font-size: 9px;
 
-	@media screen and (max-width: 1500px) {
-		width: 40px;
-		font: 10px 'Trebuchet MS';
-		height: 60px;
+		@media screen and (max-width: 1500px) {
+			width: 60px;
+			font: 6px 'Trebuchet MS';
+			height: 80px;
+		}
+	}
+
+	&_back {
+		width: 50px;
+		height: 70px;
+		font-size: 6px;
+	
+		@media screen and (max-width: 1500px) {
+			width: 40px;
+			font: 10px 'Trebuchet MS';
+			height: 60px;
+		}
 	}
 }
 

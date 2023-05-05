@@ -17,30 +17,46 @@ export class TableComponent {
   winningHand: string;
 
   // Player specific data
-  primaryPlayer: string;
-  players: any = [];
+  playerId: string;
+  playerName: string;
+  players: {name: string, id: string}[];
+
+  isCreator: boolean;
+  tableId: string = "player0";
+
+  // Other variables
+  showButton: boolean;
 
   constructor(
     private client: ClientService,
     private gameService: GameService) {
-
+      this.showButton = true
+      this.players = [];
   }
 
   ngOnInit() {
     this.gameId = this.gameService.gameId;
-    this.primaryPlayer = this.gameService.playerName;
+    this.playerId = this.gameService.playerId;
+    this.playerName = this.gameService.playerName;
     let players = this.gameService.players;
+    this.isCreator = this.gameService.isCreator;
 
-    for(let x in players) {
-      if(players[x] != this.primaryPlayer) {
-        this.players.push(players[x])
+    for(let id in players) {
+      if(id != this.playerId && id != this.tableId) {
+        this.players.push({
+          name: players[id].name,
+          id: id
+        })
       }
     }
 
-    this.gameService.onNewPlayerJoined().subscribe({
-      next: (playerName) => {
-        if(playerName != this.primaryPlayer) {
-          this.players.push(playerName)
+    this.client.onNewPlayerJoined().subscribe({
+      next: (data) => {
+        if(data["id"] != this.playerId) {
+          this.players.push({
+            name: data["name"],
+            id: data["id"]
+          })
         }
       },
       error: (err) => {
@@ -48,18 +64,23 @@ export class TableComponent {
       }
     })
 
-
-    this.client.generateCards(this.gameId)
   }
 
-  generate() {
-    this.client.generateCards(this.gameId)
-    
-    this.client.getWinner().subscribe((winner) => {
-      this.winners = winner["winners"]
-      this.winningHand = winner["winning_hand"]
-    })
+  startGame() {
+    this.showButton = false;
+    if(this.isCreator) {
+      this.client.generateCards(true)
+    } 
+  }
 
+  openCard() {
+    this.client.sendData()
+  }
+
+  checkPlayer(index: number): boolean {
+    if(this.players && this.players[index])
+      return true
+    return false
   }
 
 }

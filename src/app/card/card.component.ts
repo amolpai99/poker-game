@@ -1,4 +1,4 @@
-import { Component, Input } from '@angular/core';
+import { Component, Input, SimpleChanges } from '@angular/core';
 import { CARDS } from '../shared/cards';
 import { Card } from '../shared/card_templates';
 
@@ -20,24 +20,6 @@ export class CardComponent {
   cardSelected: Card;
   isFaceCard: boolean;
   isFrontCard: boolean;
-
-  cardSizes = {
-    "table": {
-      "width": "100px",
-      "height": "140px",
-      "font": "12px 'Trebuchet MS'"
-    },
-    "primary": {
-      "width": "100px",
-      "height": "140px",
-      "font": "12px 'Trebuchet MS'"
-    },
-    "secondary": {
-      "width": "75px",
-      "height": "105px",
-      "font": "9px 'Trebuchet MS'"
-    }
-  }
 
   cardSuits = [
     {
@@ -80,8 +62,20 @@ export class CardComponent {
     }
   }
 
-  getCardClass() {
-    return this.playerType+"_card"
+  ngOnChanges(changes: SimpleChanges) {
+    if(changes['openCard']) {
+      this.openCard = changes['openCard'].currentValue;
+      this.isFrontCard = (this.openCard === "true");
+    }
+  }
+
+  getFrontCardClass() {
+    return this.playerType+"_card_front"
+  }
+
+  getBackCardClass() {
+    return this.playerType+"_card_back"
+
   }
 
   toggleFrontBack() {
