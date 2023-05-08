@@ -1,0 +1,234 @@
+.player_info {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+    flex-wrap: wrap;
+}
+
+.table_cards {
+    position: relative;
+}
+
+.player1 {
+    position: absolute;
+    top: 0;
+    width: 100%;
+
+    &_cards {
+        position: absolute;
+        top: -66%;
+        left: 20%;
+        z-index: 3;
+    }
+
+    &_cards_open {
+        position: absolute;
+        top: -66%;
+        left: 20%;
+        z-index: 3;
+    }
+}
+
+.player2 {
+    position: absolute;
+    top: 0;
+    right: 15%;
+
+    &_cards {
+        position: absolute;
+        right: 5%;
+        top: -55%;
+        z-index: 3;
+    }
+
+    &_cards_open {
+        position: absolute;
+        right: 5%;
+        top: -15%;
+        z-index: 3;
+    }
+}
+
+.player3 {
+    position: absolute;
+    right: -10%;
+
+    &_cards {
+        position: absolute;
+        top: -75%;
+        right: -55%;
+        z-index: 3;
+    }
+
+    &_cards_open {
+        position: absolute;
+        top: -50%;
+        right: -20%;
+        z-index: 3;
+    }
+}
+
+.player4 {
+    position: absolute;
+    top: 35%;
+    right: 0;
+
+    &_cards {
+        position: absolute;
+        top: 35%;
+        right: -45%;
+        z-index: 3;
+    }
+
+    &_cards_open {
+        position: absolute;
+        top: 20%;
+        right: -10%;
+        z-index: 3;
+    }
+}
+
+.player5 {
+    position: absolute;
+    bottom: -20%;
+    right: -20%;
+
+    &_cards {
+        position: absolute;
+        bottom: -75%;
+        right: -55%;
+        z-index: 3;
+    }
+
+    &_cards_open {
+        position: absolute;
+        bottom: 25%;
+        right: -30%;
+        z-index: 3;
+    }
+}
+
+.player6 {
+    position: absolute;
+    bottom: -20%;
+    right: 0;
+
+    &_cards {
+        position: absolute;
+        right: -5%;
+        bottom: -80%;
+        z-index: 3;
+    }
+
+    &_cards_open {
+        position: absolute;
+        right: -10%;
+        bottom: 5%;
+        z-index: 3;
+    }
+}
+
+.player7 {
+    position: absolute;
+    bottom: -20%;
+    left: 0;
+
+    &_cards {
+        position: absolute;
+        left: -5%;
+        bottom: -80%;
+        z-index: 3;
+    }
+
+    &_cards_open {
+        position: absolute;
+        left: -10%;
+        bottom: 5%;
+        z-index: 3;
+    }
+}
+
+.player8 {
+    position: absolute;
+    bottom: -20%;
+    left: -20%;
+
+    &_cards {
+        position: absolute;
+        bottom: -75%;
+        left: -55%;
+        z-index: 3;
+    }
+
+    &_cards_open {
+        position: absolute;
+        bottom: 25%;
+        left: -30%;
+        z-index: 3;
+    }
+}
+
+.player9 {
+    position: absolute;
+    top: 35%;
+    left: 0;
+
+    &_cards {
+        position: absolute;
+        top: 35%;
+        left: -45%;
+        z-index: 3;
+    }
+
+    &_cards_open {
+        position: absolute;
+        top: 20%;
+        left: -10%;
+        z-index: 3;
+    }
+}
+
+.player10 {
+    position: absolute;
+    left: -10%;
+
+    &_cards {
+        position: absolute;
+        top: -75%;
+        left: -55%;
+        z-index: 3;
+    }
+
+    &_cards_open {
+        position: absolute;
+        top: -50%;
+        left: -20%;
+        z-index: 3;
+    }
+}
+
+.player11 {
+    position: absolute;
+    top: 0;
+    left: 5%;
+
+    &_cards {
+        position: absolute;
+        top: -55%;
+        left: 5%;
+        z-index: 3;
+    }
+
+    &_cards_open {
+        position: absolute;
+        left: 5%;
+        top: -15%;
+        z-index: 3;
+    }
+}
+
+h2 {
+    font-size: 18px;
+    color: #FAF9F6;
+}

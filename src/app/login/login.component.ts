@@ -110,7 +110,7 @@ export class LoginComponent {
         let gameId = data["game_id"]
         this.populateData(gameId, true, data)
 
-        let route = "table/" + gameId;
+        let route = "game/" + gameId;
         this.router.navigate([route]);
       })
     }
@@ -128,7 +128,7 @@ export class LoginComponent {
       next: (data) => {
         this.populateData(gameId, false, data)
 
-        let route = "table/" + gameId;
+        let route = "game/" + gameId;
         this.router.navigate([route]);
       },
       error: (err) => {

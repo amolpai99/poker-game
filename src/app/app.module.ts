@@ -13,20 +13,20 @@ import { ReactiveFormsModule } from '@angular/forms';
 import { AppRoutingModule } from './app-routing/app-routing.module';
 import { AppComponent } from './app.component';
 import { CardComponent } from './card/card.component';
-import { HandComponent } from './hand/hand.component';
-import { TableComponent } from './table/table.component';
+import { GameComponent } from './game/game.component';
 import { baseURL } from './shared/baseurl';
 import { LoginComponent } from './login/login.component';
 import { ClientService } from './services/client.service';
 import { GameService } from './services/game.service';
+import { PlayerComponent } from './player/player.component';
 
 @NgModule({
   declarations: [
     AppComponent,
     CardComponent,
-    HandComponent,
-    TableComponent,
-    LoginComponent
+    GameComponent,
+    LoginComponent,
+    PlayerComponent
   ],
   imports: [
     BrowserModule,

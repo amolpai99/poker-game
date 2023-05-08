@@ -1,0 +1,19 @@
+<div *ngIf="playerType != 'table'" class="player_info {{player.class}}">
+    <div class="player">
+        <img width="60px" height="60px" src="../../assets/images/user.png">
+
+    </div>
+    <div class="player">
+        <h2>{{player.name}}</h2>
+
+    </div>
+</div>
+
+<!--Player Hand-->
+<div [ngClass]="getHandClass()">
+    <div fxLayout="row" fxLayoutGap="-10px">
+        <div *ngFor="let card of cards; let i = index">
+            <app-card fxFlex card_number="{{card.toString()}}" player_type="{{playerType}}" open="{{openCards[i]}}"></app-card>
+        </div>        
+    </div>
+</div>

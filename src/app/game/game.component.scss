@@ -1,0 +1,157 @@
+.screen {
+    background-color: #aa0600;
+}
+
+.table_hand {
+    position: relative;
+}
+
+app-player {
+    width: 100%;
+    height: 100%;
+}
+
+.player1 {
+    // position: absolute;
+    // top: 0;
+    width: 100%;
+    height: 100%;
+}
+
+.player2 {
+    position: absolute;
+    top: 0;
+    right: 10%;
+}
+
+.player3 {
+    position: absolute;
+    right: -10%;
+}
+
+.player4 {
+    position: absolute;
+    right: 0;
+}
+
+.player5 {
+    position: absolute;
+    bottom: -20%;
+    right: -20%;
+}
+
+.player6 {
+    position: absolute;
+    bottom: -20%;
+    right: 10%;
+}
+
+.player7 {
+    position: absolute;
+    bottom: -20%;
+    left: 5%;
+}
+
+.player8 {
+    position: absolute;
+    bottom: -20%;
+    left: -20%;
+}
+
+.player9 {
+    position: absolute;
+    left: 0;
+}
+
+.player10 {
+    position: absolute;
+    left: -10%;
+}
+
+.player11 {
+    position: absolute;
+    top: 0;
+    left: 5%;
+}
+
+.dealer {
+    &_title {
+        bottom: 0;
+    }
+}
+
+.screen {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+}
+
+.row1, .row2, .row3 {
+    position: relative;
+    width: 100%;
+    display: flex;
+
+    &--center {
+        align-items: center;
+        justify-content: center;
+    }
+}
+
+.row1 {
+    height: 15%;
+}
+
+.row2 {
+    height: 60%;
+}
+
+.row3 {
+    height: 25%;
+}
+
+.player {
+    position: relative;
+    height: 100%;
+    width: 20%;
+
+    &--center {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+}
+
+.player_pos {
+    position: absolute;
+}
+
+.table {
+    position: relative;
+    height: 100%;
+    width: 60%;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    .table_image {
+        position: absolute;
+        width: 100%;
+        height: 100%;
+    }
+
+    .table_cards {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+}
+
+h2 {
+    position: absolute;
+}
+
+.start_game {
+    z-index: 2;
+}

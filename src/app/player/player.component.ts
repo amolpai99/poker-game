@@ -1,17 +1,21 @@
-import { Component, Inject, Input } from '@angular/core';
+import { Component, Input } from '@angular/core';
 import { ClientService } from '../services/client.service';
 import { GameService } from '../services/game.service';
 
 @Component({
-  selector: 'app-hand',
-  templateUrl: './hand.component.html',
-  styleUrls: ['./hand.component.scss']
+  selector: 'app-player',
+  templateUrl: './player.component.html',
+  styleUrls: ['./player.component.scss']
 })
-export class HandComponent {
-  @Input("player") playerId: string;
-  @Input("player_type") playerType: string = "secondary";
+export class PlayerComponent {
+  @Input('player') playerClass: string;
+  @Input('name') playerName: string;
+  @Input('id') playerId: string;
+  @Input('type') playerType: string = "secondary";
+  @Input('player_details') player: any;
 
   openCards: string[] = [];
+  isOpen: boolean;
 
   cards: number[];
 
@@ -21,7 +25,8 @@ export class HandComponent {
   }
 
   ngOnInit() {
-    console.log("ngInit called: ", this.playerId, this.playerType)
+    console.log("ngInit called: ", this.player)
+
     switch(this.playerType) {
       case "secondary": 
         this.openCards = ["false", "false"]
@@ -34,10 +39,10 @@ export class HandComponent {
     }
 
     this.client.getCards().subscribe((playerDetails) => {
-      this.cards = playerDetails[this.playerId]["cards"]
+      this.cards = playerDetails[this.player.id]["cards"]
     });
 
-    if(this.playerId == "player0") {
+    if(this.player.id == "player0") {
       this.client.openTableCards().subscribe((data) => {
         if("open_turn" in data) {
           this.openCards[3] = "true"
@@ -50,10 +55,18 @@ export class HandComponent {
     }
     else {
       this.client.openPlayerCards().subscribe((players) => {
-        if(players.indexOf(this.playerId) != -1) {
-          this.openCards = ["true", "true"]
+        if(players.indexOf(this.player.id) != -1) {
+          this.openCards = ["true", "true"];
+          this.isOpen = true;
         }
       })
     }
+  }
+
+  getHandClass() {
+    if(this.isOpen) {
+      return this.player.class+"_cards_open"
+    }
+    return this.player.class+"_cards"
   }
 }
