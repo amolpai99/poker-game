@@ -1,6 +1,11 @@
 import { Component, Input } from '@angular/core';
-import { ClientService } from '../services/client.service';
-import { GameService } from '../services/game.service';
+import { GameService, PlayerDetails } from '../services/game.service';
+
+const TOTAL_TIME = 15
+// Pre-calculated arc length
+const TOTAL_TIMER_ARC = 157
+const COLORS = []
+
 
 @Component({
   selector: 'app-player',
@@ -8,25 +13,39 @@ import { GameService } from '../services/game.service';
   styleUrls: ['./player.component.scss']
 })
 export class PlayerComponent {
-  @Input('player') playerClass: string;
-  @Input('name') playerName: string;
-  @Input('id') playerId: string;
+  // playerType indicates whether the player is the main player, table or a secondary player
   @Input('type') playerType: string = "secondary";
-  @Input('player_details') player: any;
+  // player details containing name, id and class of the player
+  @Input('player_class') playerClass: string;
+  @Input('player_id') playerId: string;
 
+  player: PlayerDetails;
+
+  // Cards of the player
+  cards: number[] | undefined;
+
+  // array to determine which cards to open
   openCards: string[] = [];
-  isOpen: boolean;
+  // openPlayerCards denotes if the cards have been opened
+  openPlayerCards: boolean;
 
-  cards: number[];
+  // Timer specific data
+  startTimer: boolean;
+  timer: Timer;
+
 
   constructor(
-    private client: ClientService,
-    private gameService: GameService) {      
+    private gameService: GameService) {
   }
 
   ngOnInit() {
-    console.log("ngInit called: ", this.player)
+    this.timer = new Timer(this.playerClass);
+    this.player = this.gameService.getPlayer(this.playerId)
+    this.cards = this.player.cards;
 
+    console.log("PlayerComponent: ", "Player ID: ", this.playerId, " | Player: ", this.player);
+
+    // TODO: Move this to separate function which will get called when new game starts
     switch(this.playerType) {
       case "secondary": 
         this.openCards = ["false", "false"]
@@ -38,35 +57,94 @@ export class PlayerComponent {
         this.openCards = ["true", "true", "true", "false", "false"]
     }
 
-    this.client.getCards().subscribe((playerDetails) => {
-      this.cards = playerDetails[this.player.id]["cards"]
-    });
+    this.player.obs$?.subscribe((params) => {
+      let state = params["state"]
+      let data = params["data"]
 
-    if(this.player.id == "player0") {
-      this.client.openTableCards().subscribe((data) => {
-        if("open_turn" in data) {
-          this.openCards[3] = "true"
-        }
-        else if("open_river" in data) {
-          this.openCards[3] = "true"
-          this.openCards[4] = "true"
-        }
-      })
-    }
-    else {
-      this.client.openPlayerCards().subscribe((players) => {
-        if(players.indexOf(this.player.id) != -1) {
-          this.openCards = ["true", "true"];
-          this.isOpen = true;
-        }
-      })
-    }
+      console.log("PlayerComponent: ", "State: ", state, " Data:" , data)
+
+      switch(state) {
+        case "get_cards":
+          this.cards = data["cards"]
+          break;
+        
+        case "open_cards":
+          if(this.playerId == "player0") {
+            let card = data["card"]
+            if(card == "turn") {
+              this.openCards[3] = "true"
+            }
+            else if(card == "river") {
+              this.openCards[4] = "true"
+            }
+          }
+          else {
+            this.openCards = ["true", "true"]
+            this.openPlayerCards = true
+          }
+          break;
+      }
+    })
   }
 
   getHandClass() {
-    if(this.isOpen) {
-      return this.player.class+"_cards_open"
+    if(this.openPlayerCards) {
+      return this.playerClass+"_cards_open"
     }
-    return this.player.class+"_cards"
+    return this.playerClass+"_cards"
+  }
+}
+
+class Timer {
+  // Timer specific data
+  timeRemaining: number;
+  private timer: NodeJS.Timer;
+
+  private playerClass: string;
+
+  constructor(playerClass: string) {
+    this.playerClass = playerClass
+  }
+
+  stopTimer() {
+    clearInterval(this.timer);
+  }
+
+  startTimer() {
+    let timePassed = 0;
+    // Start arc animation one second earlier
+    this.setTimerArc(timePassed + 1);
+
+    this.timeRemaining = TOTAL_TIME;
+    this.timer = setInterval(() => {
+      timePassed += 1;
+      // Set the remaining time
+      this.timeRemaining = TOTAL_TIME - timePassed;
+
+      // Set the timer ring
+      this.setTimerArc(timePassed + 1);
+
+      if(timePassed == TOTAL_TIME) {
+        this.stopTimer()
+      }
+
+    }, 1000)
+
+    
+  }
+
+  setTimerArc(timePassed: number) {
+    let timeRemaining = TOTAL_TIME - timePassed;
+    let timerArcRemaining = (timeRemaining / TOTAL_TIME) * TOTAL_TIMER_ARC;
+    let attribute = timerArcRemaining + " " + TOTAL_TIMER_ARC
+    let id = 'timer_' + this.playerClass
+    document
+          .getElementById(id)
+          ?.setAttribute('stroke-dasharray', attribute);  
+
+  }
+
+  getTimerArcRemaining() {
+    return (this.timeRemaining / TOTAL_TIME) * TOTAL_TIMER_ARC;
   }
 }

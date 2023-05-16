@@ -58,6 +58,13 @@ class GenericNamespace(Namespace):
 
         return {"status": "success"}
 
+    def on_current_state(self, data):
+        print("Got current state:", data)
+        new_data = game_controller.get_next_state(self.game_id, data)
+
+        print("New state: ", new_data)
+        sock.emit("next_state", new_data, namespace=self.namespace)
+
 
 @app.route("/game", methods=["POST"])
 def create_or_join_game():

@@ -61,6 +61,7 @@ class Games():
     '''
     def __init__(self):
         self.games_list = {}
+        self.table_id = "player0"
 
     def create_new_game(self, username):
         '''
@@ -77,7 +78,7 @@ class Games():
         game_id = id1 + "-" + id2
 
         player_details = {}
-        player_details["player0"] = {
+        player_details[self.table_id] = {
             "name": "table",
             "cards": None
         }
@@ -145,7 +146,7 @@ class Games():
         for player in player_details:
             if not new_round and player_details[player]["cards"] is not None:
                 continue
-            if player == "player0": # table cards
+            if player == self.table_id: # table cards
                 cards = get_cards(5)
             else:
                 cards = get_cards(2)
@@ -166,3 +167,68 @@ class Games():
         round_num = round_num + 1
         game_details["round_num"] = round_num
         return data
+
+    def get_next_state(self, game_id, data):
+        '''
+            Process the current data and get the next state
+        '''
+        game_details = self.games_list[game_id]
+
+        for name in data:
+            # Process game data
+            if name == "game":
+                state = data[name]["state"]
+                if state == "generate_cards":
+                    self.generate_cards(game_id)
+
+                    new_state = "get_cards"
+                    new_data = {}
+
+                    players = game_details["players"]
+                    for player_id in players:
+                        new_data[player_id] = {
+                            "state": new_state,
+                            "data": {
+                                "cards": players[player_id]["cards"]
+                            }
+                        }
+                    return new_data
+                
+                if state == "open_cards":
+                    new_state = "open_cards"
+                    params = {}
+                    round_num = game_details["round_num"]
+                    if round_num == 0:
+                        data = {"card": "turn"}
+
+                        params[self.table_id] = {
+                            "state": new_state,
+                            "data": data
+                        }
+                    elif round_num == 1:
+                        data = {"card": "river"}
+
+                        params[self.table_id] = {
+                            "state": new_state,
+                            "data": data
+                        }
+                    else:
+                        data = {}
+                        players = game_details["players"]
+                        for player_id in players:
+                            params[player_id] = {
+                                "state": new_state,
+                                "data": data
+                            }
+                    round_num = round_num + 1
+                    game_details["round_num"] = round_num
+                    return params
+                return None
+
+            # Process table data
+            if name == "table":
+                return None
+
+            # Process player data
+            return None
+        return None

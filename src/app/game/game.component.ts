@@ -1,12 +1,6 @@
 import { Component } from '@angular/core';
 import { ClientService } from '../services/client.service';
-import { GameService } from '../services/game.service';
-
-class PlayerDetails {
-  name: string;
-  id: string;
-  class: string;
-}
+import { GameService, PlayerDetails } from '../services/game.service';
 
 @Component({
   selector: 'app-game',
@@ -18,71 +12,43 @@ export class GameComponent {
   // Game specific data
   gameId: string;
 
-  // Winner specific data
-  winners: string[];
-  winningHand: string;
-
-  // Player specific data
-  playerId: string;
-  playerName: string;
-
-  playerIndex: number = 2;
-  player: PlayerDetails;
-  table: PlayerDetails;
-  players: PlayerDetails[];
-
+  // Main player specific data
+  mainPlayerId: string;
   isCreator: boolean;
-  tableId: string = "player0";
+
+  // Other players specific variables
+  playerIds: string[];
+
+  // Table specific data
+  tableId: string;
 
   // Other variables
   showButton: boolean;
-
+    
   constructor(
     private client: ClientService,
     private gameService: GameService) {
       this.showButton = true
-      this.players = [];
   }
 
   ngOnInit() {
     this.gameId = this.gameService.gameId;
-    this.playerId = this.gameService.playerId;
-    this.playerName = this.gameService.playerName;
-    let players = this.gameService.players;
+    this.mainPlayerId = this.gameService.mainPlayerId;
+    this.tableId = this.gameService.tableId;
+    this.playerIds = this.gameService.playerIds;
+
+    console.log("GameComponent: ", "Main player id: ", this.mainPlayerId)
+    console.log("GameComponent: ", "Table id: ", this.tableId)
+    console.log("GameComponent: ", "All Players ids: ", this.playerIds)
+  
     this.isCreator = this.gameService.isCreator;
 
-    this.player = {
-      name: this.playerName,
-      id: this.playerId,
-      class: "player1"
-    }
-
-    this.table = {
-      name: "table",
-      id: this.tableId,
-      class: "table"
-    }
-
-    for(let id in players) {
-      if(id != this.playerId && id != this.tableId) {
-        this.players.push({
-          name: players[id].name,
-          id: id,
-          class: "player"+this.playerIndex.toString(),
-        })
-        this.playerIndex++;
-      }
-    }
-
+    // When new player joins, add it to the "players" list
     this.client.onNewPlayerJoined().subscribe({
       next: (data) => {
-        if(data["id"] != this.playerId) {
-          this.players.push({
-            name: data["name"],
-            id: data["id"],
-            class: "player"+this.playerIndex.toString(),
-          })
-          this.playerIndex++;
+        if(data["id"] != this.mainPlayerId && data["id"] != this.tableId) {
+          this.gameService.addPlayer(data)
+          this.playerIds = this.gameService.playerIds
         }
       },
       error: (err) => {
@@ -90,28 +56,55 @@ export class GameComponent {
       }
     })
 
+    this.client.getNewState().subscribe((data) => {
+      console.log("GameComponent: ", "Got New Data: ", data)
+      if("game" in data) {
+        let gameData = data["game"]
+        delete data["game"]
+      }
+      this.gameService.setNewState(data);
+    })
+
+
   }
 
+  // Temporary action to start game
   startGame() {
     this.showButton = false;
     if(this.isCreator) {
-      this.client.generateCards(true)
+      let data = {
+        "game": {
+          "state": "generate_cards",
+          "data": {
+            "new_round": true
+          }
+        }
+      }
+      this.client.sendCurrentState(data)
+      
     } 
   }
 
+  // Temporary action to open table card
   openCard() {
-    this.client.sendData()
+    let data = {
+      "game": {
+        "state": "open_cards",
+      }
+    }
+    this.client.sendCurrentState(data)
   }
 
+  // Check if player exists or not
   checkPlayer(index: number): boolean {
     if(index == -1) {
-      if(this.player.id != "") {
+      if(this.mainPlayerId != "") {
         return true
       }
       return false
     }
 
-    if(this.players && this.players[index])
+    if(this.playerIds && this.playerIds[index])
       return true
     return false
   }

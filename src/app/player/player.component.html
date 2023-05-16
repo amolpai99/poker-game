@@ -1,11 +1,27 @@
-<div *ngIf="playerType != 'table'" class="player_info {{player.class}}">
-    <div class="player">
-        <img width="60px" height="60px" src="../../assets/images/user.png">
-
+<!--Player element (not applicable for table)-->
+<div *ngIf="playerType != 'table'">
+    <!--Player icon and name-->
+    <div class="{{playerClass}}">
+        <div class="player player_icon">
+            <img class="{{playerClass}}_img" src="../../assets/images/user.png">
+        </div>
+        <div class="player player_name">
+            <h4 class="{{playerClass}}_title">{{player.name}}</h4>
+        </div>
     </div>
-    <div class="player">
-        <h2>{{player.name}}</h2>
 
+    <!--Player timer-->
+    <div *ngIf="startTimer" class="timer">
+        <svg class="timer_svg" viewBox="0 0 100 100">
+            <circle cx="50" cy="50" r="25" class="timer_circle"></circle>
+            <path 
+                id="timer_{{playerClass}}"
+                stroke-dasharray="157 157"
+                class="timer_remaining"
+                d="M 50, 50 m -25, 0 a 25,25 0 1,0 50,0 a 25,25 0 1,0 -50,0">
+            </path>
+        </svg>
+        <span class="timer_value">{{timer.timeRemaining}}</span>
     </div>
 </div>
 

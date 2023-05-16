@@ -39,20 +39,9 @@ export class ClientService {
            .pipe(catchError(this.processMessage.handleError))
   }
 
-  // Creator of game will call this for generating new cards for new game
-  generateCards(newRound?: boolean) {
-    let data: any;
-    if(newRound) {
-      data = {"new_round": newRound}
-    }
-    this._socket.emit("generate_cards", data, (response: any) => {
-      return response
-    })
-  }
-
   // Player will be informed using this function when new player joins game
-  onNewPlayerJoined(): Observable<string> {
-    let obs = new Observable<string>((observer) => {
+  onNewPlayerJoined(): Observable<any> {
+    let obs = new Observable<any>((observer) => {
       this._socket.on("new_player", (data) => {
         observer.next(data)
       })
@@ -61,41 +50,69 @@ export class ClientService {
     return obs
   }
 
-  // All players will use this function to get cards of all players
-  getCards(): Observable<any> {
-    let obs = new Observable<any>((observer) => {
-      this._socket.on("get_cards", (playerDetails: any) => {
-        observer.next(playerDetails)
-      })
-    })
+  // // Creator of game will call this for generating new cards for new game
+  // generateCards(newRound?: boolean) {
+  //   let data: any;
+  //   if(newRound) {
+  //     data = {"new_round": newRound}
+  //   }
+  //   this._socket.emit("generate_cards", data, (response: any) => {
+  //     return response
+  //   })
+  // }
 
-    return obs
+  // // All players will use this function to get cards of all players
+  // getCards(): Observable<any> {
+  //   let obs = new Observable<any>((observer) => {
+  //     this._socket.on("get_cards", (playerDetails: any) => {
+  //       observer.next(playerDetails)
+  //     })
+  //   })
+
+  //   return obs
+  // }
+
+  // // This function will be called at the end to open all player cards
+  // openPlayerCards(): Observable<any> {
+  //   let obs = new Observable<any>((observer) => {
+  //     this._socket.on("open_player_cards", (data: any) => {
+  //       observer.next(data)
+  //     })
+  //   })
+
+  //   return obs
+  // }
+
+  // // This function is used to open flop and river cards
+  // openTableCards(): Observable<any> {
+  //   let obs = new Observable<any>((obs) => {
+  //     this._socket.on("open_table_cards", (data: any) => {
+  //       obs.next(data)
+  //     } )
+  //   })
+
+  //   return obs
+  // }
+
+  sendCurrentState(data: any) {
+    console.log("ClientService:", "Sending current state:", data)
+    this._socket.emit("current_state", data, (response: any) => {
+      return response
+    })
   }
 
-  // This function will be called at the end to open all player cards
-  openPlayerCards(): Observable<any> {
-    let obs = new Observable<any>((observer) => {
-      this._socket.on("open_player_cards", (data: any) => {
-        observer.next(data)
-      })
-    })
-
-    return obs
-  }
-
-  // This function is used to open flop and river cards
-  openTableCards(): Observable<any> {
+  getNewState(): Observable<any> {
     let obs = new Observable<any>((obs) => {
-      this._socket.on("open_table_cards", (data: any) => {
+      this._socket.on("next_state", (data: any) => {
+        console.log("ClientService: ", "Got next state: ", data)
         obs.next(data)
-      } )
+      })
     })
-
     return obs
   }
 
-  sendData() {
-    this._socket.emit("open_cards")
-  }
+  // sendData() {
+  //   this._socket.emit("open_cards")
+  // }
 
 }

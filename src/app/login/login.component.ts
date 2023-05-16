@@ -2,7 +2,7 @@ import { Component, ViewChild } from '@angular/core';
 import { FormBuilder, FormGroup, NgForm, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 import { ClientService } from '../services/client.service';
-import { GameDetails, GameService } from '../services/game.service';
+import { GameDetails, GameService, PlayerDetails } from '../services/game.service';
 
 
 var ids = ["p1", "p2", "p3", "p4", "p5"]
@@ -138,33 +138,28 @@ export class LoginComponent {
   }
 
   populateData(gameId: string, isCreator: boolean, data: any) {
-    let allPlayers: any = {};
-    let mainPlayer: any = {};
-    for(let player in data["game_details"]["players"]) {
-      let playerData =  data["game_details"]["players"][player]
-      allPlayers[player] = {
-        name: playerData["name"],
-        cards: playerData["cards"]
-      }
+    let allPlayers = data["game_details"]["players"];
+    let mainPlayerId: string = "";
 
+    for(let playerId in allPlayers) {
+      let playerData =  allPlayers[playerId]
       if(playerData["name"] == this.playerName) {
-        mainPlayer = {
-          id: player,
-          name: playerData["name"],
-          cards: playerData["cards"]
-        }
+        mainPlayerId = playerId
+        break;
       }
     }
 
     let gameDetails: GameDetails = {
       gameId: gameId,
-      player: mainPlayer,
+      playerId: mainPlayerId,
       isCreator: isCreator,
       allPlayers: allPlayers,
     }
-    console.log("Game details: ", gameDetails)
 
     this.gameService.gameDetails = gameDetails
+
+    console.log("LoginComponent: ", "Game Details: ", this.gameService.gameDetails)
+
     this.client.setSocket(gameId)
 
     return
