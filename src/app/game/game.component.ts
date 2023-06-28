@@ -74,7 +74,7 @@ export class GameComponent {
     if(this.isCreator) {
       let data = {
         "game": {
-          "state": "generate_cards",
+          "state": "start_game",
           "data": {
             "new_round": true
           }
@@ -97,13 +97,6 @@ export class GameComponent {
 
   // Check if player exists or not
   checkPlayer(index: number): boolean {
-    if(index == -1) {
-      if(this.mainPlayerId != "") {
-        return true
-      }
-      return false
-    }
-
     if(this.playerIds && this.playerIds[index])
       return true
     return false

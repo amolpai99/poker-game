@@ -1,89 +1,8 @@
 .screen {
+    position: absolute;
+    width: 100%;
+    height: 100%;
     background-color: #aa0600;
-}
-
-.table_hand {
-    position: relative;
-}
-
-app-player {
-    width: 100%;
-    height: 100%;
-}
-
-.player1 {
-    // position: absolute;
-    // top: 0;
-    width: 100%;
-    height: 100%;
-}
-
-.player2 {
-    position: absolute;
-    top: 0;
-    right: 10%;
-}
-
-.player3 {
-    position: absolute;
-    right: -10%;
-}
-
-.player4 {
-    position: absolute;
-    right: 0;
-}
-
-.player5 {
-    position: absolute;
-    bottom: -20%;
-    right: -20%;
-}
-
-.player6 {
-    position: absolute;
-    bottom: -20%;
-    right: 10%;
-}
-
-.player7 {
-    position: absolute;
-    bottom: -20%;
-    left: 5%;
-}
-
-.player8 {
-    position: absolute;
-    bottom: -20%;
-    left: -20%;
-}
-
-.player9 {
-    position: absolute;
-    left: 0;
-}
-
-.player10 {
-    position: absolute;
-    left: -10%;
-}
-
-.player11 {
-    position: absolute;
-    top: 0;
-    left: 5%;
-}
-
-.dealer {
-    &_title {
-        bottom: 0;
-    }
-}
-
-.screen {
-    position: absolute;
-    width: 100%;
-    height: 100%;
 }
 
 .row1, .row2, .row3 {
@@ -121,8 +40,15 @@ app-player {
     }
 }
 
-.player_pos {
-    position: absolute;
+app-player {
+    width: 100%;
+    height: 100%;
+}
+
+.dealer {
+    &_title {
+        bottom: 0;
+    }
 }
 
 .table {
@@ -152,6 +78,7 @@ h2 {
     position: absolute;
 }
 
+// Temporary
 .start_game {
     z-index: 2;
 }

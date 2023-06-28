@@ -25,11 +25,15 @@
     </div>
 </div>
 
+<div *ngIf="playerId == mainPlayerId && startTimer">
+    <button class="start_game" (click)="placeBet()">Place Bet</button>
+</div>
+
 <!--Player Hand-->
 <div [ngClass]="getHandClass()">
     <div fxLayout="row" fxLayoutGap="-10px">
         <div *ngFor="let card of cards; let i = index">
             <app-card fxFlex card_number="{{card.toString()}}" player_type="{{playerType}}" open="{{openCards[i]}}"></app-card>
-        </div>        
+        </div>
     </div>
 </div>

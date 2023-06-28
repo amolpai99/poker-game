@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { BehaviorSubject, Observable } from 'rxjs';
-import { io, Socket } from 'socket.io-client';
-import { baseURL } from '../shared/baseurl';
+
+const MAX_PLAYERS = 11
 
 @Injectable({
   providedIn: 'root'
@@ -29,13 +29,22 @@ export class GameService {
   }
 
   get playerIds(): string[] {
-    let ids: string[] = [];
+    let ids = Array(MAX_PLAYERS).fill("");
+    let index = 0;
     for(let playerId in this._gameDetails.allPlayers) {
-      if(playerId != this.mainPlayerId && playerId != this.tableId) {
+      if(playerId != this.tableId) {
         console.log("GameService: ", "Pushing id: ", playerId)
-        ids.push(playerId)
+        ids[index] = playerId
+        index++;
       }
     }
+
+    let mainPlayerIndex = ids.indexOf(this.mainPlayerId);
+    if(mainPlayerIndex != -1) {
+      let rotated = ids.splice(0, mainPlayerIndex)
+      ids = ids.concat(rotated)
+    }
+
     console.log("GameService: ", "All player ids: ", ids)
     return ids;
   }
@@ -67,7 +76,7 @@ export class GameService {
   set gameDetails(gameDetails: GameDetails) {
     for(let player in gameDetails.allPlayers) {
       let playerDetails = gameDetails.allPlayers[player]
-      let playerObs = new BehaviorSubject<any>({});
+      let playerObs = new BehaviorSubject<any>(null);
       playerDetails._behaviour = playerObs;
       playerDetails.obs$ = playerObs.asObservable();
     }
@@ -83,7 +92,7 @@ export class GameService {
       name: playerData["name"],
     }
     
-    let playerObs = new BehaviorSubject<any>({});
+    let playerObs = new BehaviorSubject<any>(null);
     newPlayer._behaviour = playerObs;
     newPlayer.obs$ = playerObs.asObservable();
 

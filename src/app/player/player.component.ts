@@ -1,5 +1,6 @@
 import { Component, Input } from '@angular/core';
 import { GameService, PlayerDetails } from '../services/game.service';
+import { ClientService } from '../services/client.service';
 
 const TOTAL_TIME = 15
 // Pre-calculated arc length
@@ -20,6 +21,7 @@ export class PlayerComponent {
   @Input('player_id') playerId: string;
 
   player: PlayerDetails;
+  mainPlayerId: string;
 
   // Cards of the player
   cards: number[] | undefined;
@@ -35,12 +37,14 @@ export class PlayerComponent {
 
 
   constructor(
+    private client: ClientService,
     private gameService: GameService) {
   }
 
   ngOnInit() {
     this.timer = new Timer(this.playerClass);
-    this.player = this.gameService.getPlayer(this.playerId)
+    this.player = this.gameService.getPlayer(this.playerId);
+    this.mainPlayerId = this.gameService.mainPlayerId;
     this.cards = this.player.cards;
 
     console.log("PlayerComponent: ", "Player ID: ", this.playerId, " | Player: ", this.player);
@@ -58,33 +62,65 @@ export class PlayerComponent {
     }
 
     this.player.obs$?.subscribe((params) => {
-      let state = params["state"]
-      let data = params["data"]
-
-      console.log("PlayerComponent: ", "State: ", state, " Data:" , data)
-
-      switch(state) {
-        case "get_cards":
-          this.cards = data["cards"]
-          break;
-        
-        case "open_cards":
-          if(this.playerId == "player0") {
-            let card = data["card"]
-            if(card == "turn") {
-              this.openCards[3] = "true"
-            }
-            else if(card == "river") {
-              this.openCards[4] = "true"
-            }
-          }
-          else {
-            this.openCards = ["true", "true"]
-            this.openPlayerCards = true
-          }
-          break;
+      if(params) {
+        console.log("PlayerComponent:", "Player ID:", this.playerId, "Received params", params)
+        for(let player_data of params) {
+          let state = player_data.state
+          let data = player_data.data
+          console.log("PlayerComponent: ", "Player ID:", this.playerId, "State: ", state, "Data:", data)
+          this.processState(state, data)
+        }
       }
     })
+  }
+
+  processState(state: string, data: any) {
+    switch(state) {
+      case "get_cards":
+        this.cards = data["cards"]
+        console.log("PlayerComponent:", "Player ID:", this.playerId, "Got cards:", this.cards)
+        break;
+      
+      case "open_cards":
+        if(this.playerId == "player0") {
+          let card = data["card"]
+          if(card == "turn") {
+            this.openCards[3] = "true"
+          }
+          else if(card == "river") {
+            this.openCards[4] = "true"
+          }
+        }
+        else {
+          this.openCards = ["true", "true"]
+          this.openPlayerCards = true
+        }
+        break;
+
+      case "place_bet":
+        console.log("PlayerComponent", "Player ID:", this.playerId, "Received state:", state, "Starting Timer")
+        this.startTimer = true
+        this.timer.startTimer()
+        break;
+
+      case "update_stack":
+        console.log("PlayerComponent:", "Player ID:", this.playerId, "Updating stack of player", this.playerId)
+        this.startTimer = false
+        this.timer.stopTimer()
+    }
+  }
+
+  placeBet() {
+    this.timer.stopTimer()
+    this.startTimer = false
+
+    let state = {}
+    state[this.playerId] = {
+      "state": "bet_placed",
+      "data": {}
+    }
+    
+    this.client.sendCurrentState(state)
   }
 
   getHandClass() {

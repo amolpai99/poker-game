@@ -154,19 +154,71 @@ class Games():
 
         return "success"
 
-    def open_cards(self, game_id):
-        game_details = self.games_list[game_id]
-        round_num = game_details["round_num"]
-        if round_num == 0:
-            data = {"table": {"open_turn": True}}
-        elif round_num == 1:
-            data = {"table": {"open_river": True}}
+    def update_params(self, params, player_id, state, data):
+        if params.get(player_id, None):
+            params[player_id].append({
+                "state": state,
+                "data": data
+            })
         else:
-            data = {"players": list(game_details["players"].keys())}
+            params[player_id] = [{
+                "state": state,
+                "data": data
+            }]
 
+    def open_cards(self, game_details, params):
+        new_state = "open_cards"
+        round_num = game_details["round_num"]
+
+        if round_num in (0, 1):
+            card_to_open = "turn" if round_num == 0 else "river"
+            data = {"card": card_to_open}
+
+            self.update_params(params, self.table_id, new_state, data)
+        else:
+            data = {}
+            players = game_details["players"]
+            for player_id in players:
+                if player_id == "player0":
+                    continue
+
+                self.update_params(params, player_id, new_state, data)
         round_num = round_num + 1
         game_details["round_num"] = round_num
-        return data
+        return params
+
+
+    def start_game(self, game_details, params):
+        state = "get_cards"
+
+        players = game_details["players"]
+        for player_id in players:
+            data = {"cards": players[player_id]["cards"]}
+            self.update_params(params, player_id, state, data)
+
+        # Send "place_bet" for first player to start the round
+        state_place_bet = "place_bet"
+        self.update_params(params, "player1", state_place_bet, {})
+        return params
+
+    def place_bet(self, game_details, current_player_id, params):
+        '''
+            Set state for next player to place bet, update stack of current player
+        '''
+        self.update_params(params, current_player_id, "update_stack", {})
+
+        player_num = int(current_player_id[-1])
+        next_player_num = player_num + 1 if player_num < game_details["num_players"] else 1
+        next_player_id = "player" + str(next_player_num)
+
+        if next_player_id == "player1":
+            self.open_cards(game_details, params)
+
+        round_num = game_details["round_num"]
+        if round_num < 3:
+            self.update_params(params, next_player_id, "place_bet", [])
+
+        return params
 
     def get_next_state(self, game_id, data):
         '''
@@ -174,61 +226,28 @@ class Games():
         '''
         game_details = self.games_list[game_id]
 
-        for name in data:
+        params = {}
+        for player_id in data:
             # Process game data
-            if name == "game":
-                state = data[name]["state"]
-                if state == "generate_cards":
+            if player_id == "game":
+                state = data[player_id]["state"]
+                if state == "start_game":
                     self.generate_cards(game_id)
 
-                    new_state = "get_cards"
-                    new_data = {}
-
-                    players = game_details["players"]
-                    for player_id in players:
-                        new_data[player_id] = {
-                            "state": new_state,
-                            "data": {
-                                "cards": players[player_id]["cards"]
-                            }
-                        }
-                    return new_data
-                
+                    return self.start_game(game_details, params)
                 if state == "open_cards":
-                    new_state = "open_cards"
-                    params = {}
-                    round_num = game_details["round_num"]
-                    if round_num == 0:
-                        data = {"card": "turn"}
-
-                        params[self.table_id] = {
-                            "state": new_state,
-                            "data": data
-                        }
-                    elif round_num == 1:
-                        data = {"card": "river"}
-
-                        params[self.table_id] = {
-                            "state": new_state,
-                            "data": data
-                        }
-                    else:
-                        data = {}
-                        players = game_details["players"]
-                        for player_id in players:
-                            params[player_id] = {
-                                "state": new_state,
-                                "data": data
-                            }
-                    round_num = round_num + 1
-                    game_details["round_num"] = round_num
+                    self.open_cards(game_details, params)
                     return params
-                return None
 
             # Process table data
-            if name == "table":
+            if player_id == "table":
                 return None
 
             # Process player data
-            return None
+            player_state = data[player_id]["state"]
+            if player_state == "bet_placed":
+                self.place_bet(game_details, player_id, params)
+
+                # Go to next state
+                return params
         return None
