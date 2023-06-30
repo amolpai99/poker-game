@@ -21,6 +21,7 @@ export class GameComponent {
 
   // Table specific data
   tableId: string;
+  potAmount: number = 0;
 
   // Other variables
   showButton: boolean;
@@ -58,41 +59,60 @@ export class GameComponent {
 
     this.client.getNewState().subscribe((data) => {
       console.log("GameComponent: ", "Got New Data: ", data)
+      let gameData: any;
       if("game" in data) {
-        let gameData = data["game"]
+        gameData = data["game"]
         delete data["game"]
       }
       this.gameService.setNewState(data);
+      this.processGameState(gameData)
     })
+  }
 
+  processGameState(gameData: any) {
+    if(!gameData) {
+      return
+    }
 
+    console.log("GameComponent: Received game data: ", gameData)
+    for(let state_data of gameData) {
+      let state = state_data["state"]
+      let data = state_data["data"]
+
+      switch(state) {
+        case "update_pot":
+          let amount = data["amount"]
+          this.potAmount = amount;
+          break;
+      }
+    }
+  }
+
+  sendState(state: string, data?: any) {
+    let gameData = {
+      "game": {
+        "state": state,
+        "data": data
+      }
+    }
+
+    this.client.sendCurrentState(gameData)
   }
 
   // Temporary action to start game
   startGame() {
     this.showButton = false;
-    if(this.isCreator) {
+    if(this.isCreator) {  
       let data = {
-        "game": {
-          "state": "start_game",
-          "data": {
-            "new_round": true
-          }
-        }
+        "new_round": true
       }
-      this.client.sendCurrentState(data)
-      
-    } 
+      this.sendState("start_game", data)
+    }
   }
 
   // Temporary action to open table card
   openCard() {
-    let data = {
-      "game": {
-        "state": "open_cards",
-      }
-    }
-    this.client.sendCurrentState(data)
+    this.sendState("open_cards")
   }
 
   // Check if player exists or not

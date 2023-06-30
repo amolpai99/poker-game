@@ -2,6 +2,24 @@ import { Injectable } from '@angular/core';
 import { BehaviorSubject, Observable } from 'rxjs';
 
 const MAX_PLAYERS = 11
+const DEBUG = false
+
+const MOCK: GameDetails = {
+  gameId: "mock",
+  playerId: "player0",
+  allPlayers: {
+    "player0": {
+      "name": "table"
+    },
+    "player1": {
+      name: "gamer32116",
+    },
+    "player2": {
+      name: "abolipai"
+    }
+  },
+  isCreator: true
+}
 
 @Injectable({
   providedIn: 'root'
@@ -12,6 +30,9 @@ export class GameService {
   private _playerObservables: BehaviorSubject<any>[];
 
   constructor() {
+    if(DEBUG) {
+      this._gameDetails = MOCK;
+    }
   }
 
   /* <----------- GETTERS -----------> */

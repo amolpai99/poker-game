@@ -4,8 +4,8 @@ import { ClientService } from '../services/client.service';
 
 const TOTAL_TIME = 15
 // Pre-calculated arc length
-const TOTAL_TIMER_ARC = 157
-const COLORS = []
+const TOTAL_TIMER_ARC = 331.4
+const COLORS = ['green', 'yellow', 'red']
 
 
 @Component({
@@ -117,7 +117,9 @@ export class PlayerComponent {
     let state = {}
     state[this.playerId] = {
       "state": "bet_placed",
-      "data": {}
+      "data": {
+        "amount": 100
+      }
     }
     
     this.client.sendCurrentState(state)
@@ -149,7 +151,7 @@ class Timer {
   startTimer() {
     let timePassed = 0;
     // Start arc animation one second earlier
-    this.setTimerArc(timePassed + 1);
+    // this.setTimerArc(timePassed + 1);
 
     this.timeRemaining = TOTAL_TIME;
     this.timer = setInterval(() => {
@@ -178,9 +180,19 @@ class Timer {
           .getElementById(id)
           ?.setAttribute('stroke-dasharray', attribute);  
 
-  }
 
-  getTimerArcRemaining() {
-    return (this.timeRemaining / TOTAL_TIME) * TOTAL_TIMER_ARC;
+    if(timeRemaining == 10) {
+      document
+            .getElementById(id)
+            ?.setAttribute('stroke', '#EFE34F')
+    }
+
+    if(timeRemaining == 5) {
+      
+      document
+            .getElementById(id)
+            ?.setAttribute('stroke', '#CB2D03')
+    }
+
   }
 }

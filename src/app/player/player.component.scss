@@ -4,26 +4,20 @@
     justify-content: center;
     flex-direction: column;
     flex-wrap: wrap;
-
-    &_icon {
-        border-left: 2px solid black;
-        border-right: 2px solid black;
-        border-top: 2px solid black;
-        border-radius: 10px 10px 0 0;
-        padding: 10px;
-    }
+    border: 2px solid black;
+    border-radius: 10px 10px 10px 10px;
+    padding: 10px 10px 0 10px;
+    width: 70%;
 
     &_name {
-        border: 2px solid black;
-        border-radius: 0 0 10px 10px;
-        padding: 0 10px 0 10px;
+        padding: 0 10px 10px 10px;
         height: 45px;
     }
 }
 
 h4 {
     // font-size: 18px;
-    color: #FAF9F6;
+    color: black;
 }
 
 .table_cards {
@@ -35,8 +29,11 @@ h4 {
     position: absolute;
     top: 0;
     left: 35%;
-    width: 130px;
+    width: 150px;
     font-size: 18px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
 
     &_title {
         font-size: 15px;
@@ -63,7 +60,10 @@ h4 {
 }
 
 .player1, .player2, .player3, .player4, .player5, .player6, .player7, .player8, .player9, .player10 {
-    width: 110px;
+    width: 130px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
 
     &_title {
         font-size: 15px;
@@ -285,33 +285,18 @@ h4 {
     justify-content: center;
     align-items: center;
 
-
-    &_circle {
-        stroke-width: 6px;
-        stroke: rgb(148, 148, 148);
-        fill: none;
-        stroke-linecap: round;
-    }
-
     &_remaining {
-        stroke-width: 6px;
-        stroke: green;
+        stroke-width: 3.5px;
         fill: none;
-        stroke-linecap: round;
         transform: rotate(90deg);
         transform-origin: center;
 
-        transition: 1s linear all;
+        transition: 1s linear;
+        -moz-transition: 1s linear;
     }
 
     &_svg {
-        width: 100%;
-        height: 100%;
-        transform: scaleX(-1);
-    }
-
-    &_value {
         position: absolute;
-        font-size: 20px;
+        transform: scaleX(-1);
     }
 }

@@ -2,26 +2,22 @@
 <div *ngIf="playerType != 'table'">
     <!--Player icon and name-->
     <div class="{{playerClass}}">
-        <div class="player player_icon">
-            <img class="{{playerClass}}_img" src="../../assets/images/user.png">
-        </div>
-        <div class="player player_name">
-            <h4 class="{{playerClass}}_title">{{player.name}}</h4>
-        </div>
-    </div>
-
-    <!--Player timer-->
-    <div *ngIf="startTimer" class="timer">
         <svg class="timer_svg" viewBox="0 0 100 100">
-            <circle cx="50" cy="50" r="25" class="timer_circle"></circle>
-            <path 
+            <path
                 id="timer_{{playerClass}}"
-                stroke-dasharray="157 157"
+                stroke-dasharray="331.4 331.4"
+                stroke="green"
                 class="timer_remaining"
-                d="M 50, 50 m -25, 0 a 25,25 0 1,0 50,0 a 25,25 0 1,0 -50,0">
-            </path>
+                d="M 12.5 7.5 Q 7.5 7.5 7.5 12.5 L 7.5 87.5 Q 7.5 92.5 12.5 92.5 L 87.5 92.5 Q 92.5 92.5 92.5 87.5 L 92.5 12.5 Q 92.5 7.5 87.5 7.5 Z"></path>
         </svg>
-        <span class="timer_value">{{timer.timeRemaining}}</span>
+        <div class="player">
+            <div>
+                <img class="{{playerClass}}_img" src="../../assets/images/user.png">
+            </div>
+            <div class="player_name">
+                <h4 class="{{playerClass}}_title">{{player.name}}</h4>
+            </div>
+        </div>
     </div>
 </div>
 
