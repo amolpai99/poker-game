@@ -18,9 +18,10 @@ export class PlayerComponent {
   @Input('type') playerType: string = "secondary";
   // player details containing name, id and class of the player
   @Input('player_class') playerClass: string;
-  @Input('player_id') playerId: string;
+  @Input('player_id') playerId: string = "player1";
 
   player: PlayerDetails;
+  playerStack: number = 0;
   mainPlayerId: string;
 
   // Cards of the player
@@ -44,6 +45,7 @@ export class PlayerComponent {
   ngOnInit() {
     this.timer = new Timer(this.playerClass);
     this.player = this.gameService.getPlayer(this.playerId);
+    this.playerStack = this.player.stack;
     this.mainPlayerId = this.gameService.mainPlayerId;
     this.cards = this.player.cards;
 
@@ -60,6 +62,8 @@ export class PlayerComponent {
       case "table":
         this.openCards = ["true", "true", "true", "false", "false"]
     }
+
+    this.startTimer = true
 
     this.player.obs$?.subscribe((params) => {
       if(params) {
@@ -100,17 +104,23 @@ export class PlayerComponent {
       case "place_bet":
         console.log("PlayerComponent", "Player ID:", this.playerId, "Received state:", state, "Starting Timer")
         this.startTimer = true
-        this.timer.startTimer()
+        // Need to start the timer after a small timeout to let the timer element get formed
+        setTimeout(() => {
+          this.timer.startTimer()
+        }, 100)
         break;
 
       case "update_stack":
         console.log("PlayerComponent:", "Player ID:", this.playerId, "Updating stack of player", this.playerId)
-        this.startTimer = false
-        this.timer.stopTimer()
-    }
+        this.playerStack -= 100;
+        this.startTimer = false;
+        this.timer.stopTimer();
+      }
   }
 
   placeBet() {
+    console.log("PlayerComponent: Placing a new bet")
+
     this.timer.stopTimer()
     this.startTimer = false
 
@@ -139,9 +149,11 @@ class Timer {
   private timer: NodeJS.Timer;
 
   private playerClass: string;
+  private currentColor: string;
 
   constructor(playerClass: string) {
     this.playerClass = playerClass
+    this.currentColor = "green"
   }
 
   stopTimer() {
@@ -151,7 +163,8 @@ class Timer {
   startTimer() {
     let timePassed = 0;
     // Start arc animation one second earlier
-    // this.setTimerArc(timePassed + 1);
+    this.currentColor = "green"
+    this.setTimerArc(timePassed + 1);
 
     this.timeRemaining = TOTAL_TIME;
     this.timer = setInterval(() => {
@@ -159,13 +172,13 @@ class Timer {
       // Set the remaining time
       this.timeRemaining = TOTAL_TIME - timePassed;
 
-      // Set the timer ring
-      this.setTimerArc(timePassed + 1);
-
       if(timePassed == TOTAL_TIME) {
         this.stopTimer()
       }
-
+      else {
+        // Set the timer ring
+        this.setTimerArc(timePassed + 1);
+      }
     }, 1000)
 
     
@@ -175,23 +188,22 @@ class Timer {
     let timeRemaining = TOTAL_TIME - timePassed;
     let timerArcRemaining = (timeRemaining / TOTAL_TIME) * TOTAL_TIMER_ARC;
     let attribute = timerArcRemaining + " " + TOTAL_TIMER_ARC
+    console.log("PlayerComponent: Timer: Time passed: ", timePassed, " Time remaining: ", timeRemaining, " , TimerArcRemaining: ", timerArcRemaining)
     let id = 'timer_' + this.playerClass
-    document
-          .getElementById(id)
-          ?.setAttribute('stroke-dasharray', attribute);  
+    let timerElement = document.getElementById(id)
+    timerElement?.setAttribute('stroke-dasharray', attribute);  
 
-
-    if(timeRemaining == 10) {
-      document
-            .getElementById(id)
-            ?.setAttribute('stroke', '#EFE34F')
+    if(this.currentColor == "green") {
+      if(this.timeRemaining == 10) {
+        this.currentColor = "yellow"
+        timerElement?.setAttribute('stroke', '#EFE34F')
+      }
     }
-
-    if(timeRemaining == 5) {
-      
-      document
-            .getElementById(id)
-            ?.setAttribute('stroke', '#CB2D03')
+    else if(this.currentColor == "yellow") {
+      if(this.timeRemaining == 5) {
+        this.currentColor = "red"
+        timerElement?.setAttribute('stroke', '#CB2D03')
+      }
     }
 
   }

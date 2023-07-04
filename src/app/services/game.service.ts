@@ -2,20 +2,23 @@ import { Injectable } from '@angular/core';
 import { BehaviorSubject, Observable } from 'rxjs';
 
 const MAX_PLAYERS = 11
-const DEBUG = false
+const DEBUG = true
 
 const MOCK: GameDetails = {
   gameId: "mock",
-  playerId: "player0",
+  playerId: "player1",
   allPlayers: {
     "player0": {
-      "name": "table"
+      "name": "table",
+      "stack": 0,
     },
     "player1": {
       name: "gamer32116",
+      stack: 1000,
     },
     "player2": {
-      name: "abolipai"
+      name: "abolipai",
+      stack: 1000,
     }
   },
   isCreator: true
@@ -81,7 +84,7 @@ export class GameService {
       return this._gameDetails.allPlayers[id]
     }
     console.log("GameService: ", "Player with id: ", id, " not found")
-    return {name: ""}
+    return {name: "", stack: 0}
   }
 
   // Get if the player is creator of game
@@ -111,6 +114,7 @@ export class GameService {
   addPlayer(playerData: any) {
     let newPlayer: PlayerDetails = {
       name: playerData["name"],
+      stack: 1000,
     }
     
     let playerObs = new BehaviorSubject<any>(null);
@@ -142,5 +146,6 @@ export class PlayerDetails {
   name: string;
   cards?: number[];
   _behaviour?: BehaviorSubject<any>;
-  obs$?: Observable<any>
+  obs$?: Observable<any>;
+  stack: number;
 }

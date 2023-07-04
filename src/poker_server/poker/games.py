@@ -80,12 +80,14 @@ class Games():
         player_details = {}
         player_details[self.table_id] = {
             "name": "table",
-            "cards": None
+            "cards": None,
+            "stack": 0
         }
 
         player_details["player1"] = {
             "name": username,
-            "cards": None
+            "cards": None,
+            "stack": 1000
         }
 
         new_game = {
@@ -117,7 +119,8 @@ class Games():
         player_id = "player" + str(num_players + 1)
         game_details["players"][player_id] = {
             "name": player_name,
-            "cards": None
+            "cards": None,
+            "stack": 1000
         }
         game_details["num_players"] = num_players+1
         return player_id

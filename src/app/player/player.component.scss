@@ -1,8 +1,10 @@
+@import url('https://fonts.googleapis.com/css2?family=Righteous&display=swap');
+
 .player {
     display: flex;
     align-items: center;
     justify-content: center;
-    flex-direction: column;
+    flex-direction: row;
     flex-wrap: wrap;
     border: 2px solid black;
     border-radius: 10px 10px 10px 10px;
@@ -10,10 +12,37 @@
     width: 70%;
 
     &_name {
-        padding: 0 10px 10px 10px;
+        padding: 0 10px 2px 10px;
         height: 45px;
     }
+
+    &_stack {
+        padding-top: 10px;
+        font-family: 'Righteous', cursive;
+        color: #fca841;
+        font-size: 20px;
+    }
 }
+
+// <----------------- Timer specific CSS classes ----------------->
+.timer {
+    &_remaining {
+        stroke-width: 3.5px;
+        fill: none;
+        transform: rotate(90deg);
+        transform-origin: center;
+
+        transition: stroke-dasharray 1s linear, stroke 3s linear;
+        -moz-transition: 1s linear;
+    }
+
+    &_svg {
+        position: absolute;
+        transform: scaleX(-1);
+        top: -8%;
+    }
+}
+
 
 h4 {
     // font-size: 18px;
@@ -22,6 +51,38 @@ h4 {
 
 .table_cards {
     position: relative;
+}
+
+.bet, .raise, .fold {
+    position: fixed;
+    z-index: 1000;
+    right: 5%;
+    background-color: #FFD700;
+    font-size: 15px;
+    font-family: 'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif;
+    padding: 10px 30px 10px 30px;
+    border: 5px solid rgba(255, 204, 0, 0.835);
+    box-shadow: 0 5px 7px rgba(0, 0, 0, 0.3);
+    border-radius: 25px;
+    width: 150px;
+
+    &:hover {
+        background-color: rgb(134, 255, 134);
+        border: 5px solid rgb(1, 236, 1);
+        cursor: pointer;
+    }
+}
+
+.bet {
+    bottom: 20%;
+}
+
+.raise {
+    bottom: 12.5%;
+}
+
+.fold {
+    bottom: 5%;
 }
 
 // <----------------- Player specific CSS classes ----------------->
@@ -34,6 +95,7 @@ h4 {
     display: flex;
     align-items: center;
     justify-content: center;
+    flex-direction: column;
 
     &_title {
         font-size: 15px;
@@ -60,10 +122,11 @@ h4 {
 }
 
 .player1, .player2, .player3, .player4, .player5, .player6, .player7, .player8, .player9, .player10 {
-    width: 130px;
+    width: 125px;
     display: flex;
     align-items: center;
     justify-content: center;
+    flex-direction: column;
 
     &_title {
         font-size: 15px;
@@ -270,33 +333,5 @@ h4 {
         left: 5%;
         top: -15%;
         z-index: 3;
-    }
-}
-
-// <----------------- Timer specific CSS classes ----------------->
-.timer {
-    position: absolute;
-    bottom: 0;
-    left: 37.5%;
-    width: 100px;
-    height: 100px;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-
-    &_remaining {
-        stroke-width: 3.5px;
-        fill: none;
-        transform: rotate(90deg);
-        transform-origin: center;
-
-        transition: 1s linear;
-        -moz-transition: 1s linear;
-    }
-
-    &_svg {
-        position: absolute;
-        transform: scaleX(-1);
     }
 }

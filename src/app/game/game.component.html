@@ -30,7 +30,7 @@
         <div class="table">
             <img class="table_image" src="../../assets/images/result.png">
             <app-player class="table_cards" *ngIf="tableId" player_id="{{tableId}}" player_class="table" type="table"></app-player>
-            <span *ngIf="!showButton" class="table_pot">${{potAmount}}</span>
+            <span class="table_pot">${{potAmount}}</span>
             <button *ngIf="isCreator && showButton" class="start_game" (click)="startGame()">Start Game</button>
         </div>
         <div class="player">
