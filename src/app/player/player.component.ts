@@ -1,11 +1,8 @@
 import { Component, Input } from '@angular/core';
 import { GameService, PlayerDetails } from '../services/game.service';
 import { ClientService } from '../services/client.service';
-
-const TOTAL_TIME = 15
-// Pre-calculated arc length
-const TOTAL_TIMER_ARC = 331.4
-const COLORS = ['green', 'yellow', 'red']
+import { Timer } from '../utils/timer';
+import { Slider } from '../utils/slider';
 
 
 @Component({
@@ -35,7 +32,13 @@ export class PlayerComponent {
   // Timer specific data
   startTimer: boolean;
   timer: Timer;
+  totalTime: number = 15;
 
+  // Slider specific data
+  slider: Slider;
+  minBetAmount = 100;
+  maxBetAmount = 100000;
+  betAmount: number = this.minBetAmount;
 
   constructor(
     private client: ClientService,
@@ -43,7 +46,12 @@ export class PlayerComponent {
   }
 
   ngOnInit() {
-    this.timer = new Timer(this.playerClass);
+    // Timer object
+    this.timer = new Timer(this.playerClass, this.totalTime);
+
+    // Slider object for betting amount
+    this.slider = new Slider(this.minBetAmount, this.maxBetAmount, this.betAmount);
+  
     this.player = this.gameService.getPlayer(this.playerId);
     this.playerStack = this.player.stack;
     this.mainPlayerId = this.gameService.mainPlayerId;
@@ -62,8 +70,6 @@ export class PlayerComponent {
       case "table":
         this.openCards = ["true", "true", "true", "false", "false"]
     }
-
-    this.startTimer = true
 
     this.player.obs$?.subscribe((params) => {
       if(params) {
@@ -112,7 +118,7 @@ export class PlayerComponent {
 
       case "update_stack":
         console.log("PlayerComponent:", "Player ID:", this.playerId, "Updating stack of player", this.playerId)
-        this.playerStack -= 100;
+        this.playerStack -= this.betAmount;
         this.startTimer = false;
         this.timer.stopTimer();
       }
@@ -128,7 +134,7 @@ export class PlayerComponent {
     state[this.playerId] = {
       "state": "bet_placed",
       "data": {
-        "amount": 100
+        "amount": this.betAmount
       }
     }
     
@@ -141,70 +147,12 @@ export class PlayerComponent {
     }
     return this.playerClass+"_cards"
   }
-}
 
-class Timer {
-  // Timer specific data
-  timeRemaining: number;
-  private timer: NodeJS.Timer;
-
-  private playerClass: string;
-  private currentColor: string;
-
-  constructor(playerClass: string) {
-    this.playerClass = playerClass
-    this.currentColor = "green"
-  }
-
-  stopTimer() {
-    clearInterval(this.timer);
-  }
-
-  startTimer() {
-    let timePassed = 0;
-    // Start arc animation one second earlier
-    this.currentColor = "green"
-    this.setTimerArc(timePassed + 1);
-
-    this.timeRemaining = TOTAL_TIME;
-    this.timer = setInterval(() => {
-      timePassed += 1;
-      // Set the remaining time
-      this.timeRemaining = TOTAL_TIME - timePassed;
-
-      if(timePassed == TOTAL_TIME) {
-        this.stopTimer()
-      }
-      else {
-        // Set the timer ring
-        this.setTimerArc(timePassed + 1);
-      }
-    }, 1000)
-
-    
-  }
-
-  setTimerArc(timePassed: number) {
-    let timeRemaining = TOTAL_TIME - timePassed;
-    let timerArcRemaining = (timeRemaining / TOTAL_TIME) * TOTAL_TIMER_ARC;
-    let attribute = timerArcRemaining + " " + TOTAL_TIMER_ARC
-    console.log("PlayerComponent: Timer: Time passed: ", timePassed, " Time remaining: ", timeRemaining, " , TimerArcRemaining: ", timerArcRemaining)
-    let id = 'timer_' + this.playerClass
-    let timerElement = document.getElementById(id)
-    timerElement?.setAttribute('stroke-dasharray', attribute);  
-
-    if(this.currentColor == "green") {
-      if(this.timeRemaining == 10) {
-        this.currentColor = "yellow"
-        timerElement?.setAttribute('stroke', '#EFE34F')
-      }
+  onAmountChange(event: any) {
+    let target = event.target;
+    if(target.value) {
+      this.betAmount = target.value;
+      this.slider.changeColor(target.value);
     }
-    else if(this.currentColor == "yellow") {
-      if(this.timeRemaining == 5) {
-        this.currentColor = "red"
-        timerElement?.setAttribute('stroke', '#CB2D03')
-      }
-    }
-
   }
 }

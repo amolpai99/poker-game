@@ -1,7 +1,9 @@
 <!--Player element (not applicable for table)-->
 <div *ngIf="playerType != 'table'">
     <!--Player icon and name-->
-    <div class="{{playerClass}}">
+    <!-- FORMAT 1: Display icon and name in same div, with a rectangular border and a timer around that border -->
+    <!-- CONS: Complex svg that needs to have absolute position to work properly -->
+    <!-- <div class="{{playerClass}}">
         <svg *ngIf="startTimer" class="timer_svg" viewBox="0 0 100 100">
             <path
                 id="timer_{{playerClass}}"
@@ -21,13 +23,46 @@
         <div class="player_stack">
             <span>${{playerStack}}</span>
         </div>
+    </div> -->
+
+    <!-- FORMAT 2: Have name on the top, icon in circular format, and stack in rectangular format -->
+    <div class="{{playerClass}}">
+        <div class="player_name">
+            <h4 class="{{playerClass}}_title">{{player.name}}</h4>
+        </div>
+
+        <div class="player">
+            <img class="{{playerClass}}_img" src="../../assets/images/user.png">
+            <svg *ngIf="startTimer" class="timer_svg" viewBox="0 0 100 100">
+                <!-- <circle cx="50" cy="50" r="50" fill="#2ffe00" stroke-width="5px"></circle> -->
+                <path class="timer_circle" id="timer_{{playerClass}}" stroke-width="2px" stroke="green" fill="#2ffe00"></path>
+            </svg>
+        </div>
+        <div class="player_stack">
+            <span>${{playerStack}}</span>
+        </div>
     </div>
+
 </div>
 
-<div *ngIf="playerId == mainPlayerId && startTimer">
-    <button class="bet" (click)="placeBet()">Bet</button>
-    <button class="raise" (click)="placeBet()">Raise</button>
-    <button class="fold" (click)="placeBet()">Fold</button>
+<div class="bets" *ngIf="playerId == mainPlayerId && startTimer">
+    <div class="betting_class">
+        <button class="bet" (click)="placeBet()">Bet</button>
+        <button class="raise" (click)="placeBet()">Raise</button>
+        <button class="fold" (click)="placeBet()">Fold</button>
+    </div>
+    <div class="slider_class">
+        <input
+            id="slider"
+            type="range"
+            [min]="minBetAmount"
+            [max]="maxBetAmount"
+            step="100"
+            [(ngModel)]="betAmount"
+            (input)="onAmountChange($event)"
+        >
+        <input type="number" [value]="betAmount" (input)="onAmountChange($event)">
+    </div>
 </div>
 
 <!--Player Hand-->

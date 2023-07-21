@@ -1,20 +1,36 @@
 @import url('https://fonts.googleapis.com/css2?family=Righteous&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Oxanium:wght@200&display=swap');
+
+$border-radius-format1: 10px 10px 10px 10px;
+$border-radius-format2: 50%;
+
+$main-player-image-size-format1: 60px;
+$main-player-image-size-format2: 100%;
+$player-image-size-format1: 40px;
+$player-image-size-format2: 90%;
+
 
 .player {
+    // FORMAT 1: For name and icon in same div, with a rectangular border, and stack at bottom
+    // display: flex;
+    // align-items: center;
+    // justify-content: center;
+    // flex-direction: row;
+    // flex-wrap: wrap;
+    // border: 2px solid black;
+    // border-radius: $border-radius-format1;
+    // padding: 10px 10px 0 10px;
+    // width: 70%;
+
+    // FORMAT 2: For name at top, icon in circular div and stack at bottom with rectangular div
     display: flex;
     align-items: center;
     justify-content: center;
-    flex-direction: row;
-    flex-wrap: wrap;
     border: 2px solid black;
-    border-radius: 10px 10px 10px 10px;
-    padding: 10px 10px 0 10px;
-    width: 70%;
-
-    &_name {
-        padding: 0 10px 2px 10px;
-        height: 45px;
-    }
+    border-radius: $border-radius-format2;
+    padding: 10px;
+    width: 50%;
+    transition: all 3s linear;
 
     &_stack {
         padding-top: 10px;
@@ -23,6 +39,22 @@
         font-size: 20px;
     }
 }
+
+.player_name {
+    position: relative;
+    text-align: center;
+    width: 100%;
+    height: 45px;
+}
+
+h4 {
+    color: black;
+}
+
+.table_cards {
+    position: relative;
+}
+
 
 // <----------------- Timer specific CSS classes ----------------->
 .timer {
@@ -36,35 +68,54 @@
         -moz-transition: 1s linear;
     }
 
+    // FORMAT 1: For rectangle-based timer
+    // &_svg {
+    //     position: absolute;
+    //     transform: scaleX(-1);
+    //     top: -8%;
+    // }
+
     &_svg {
         position: absolute;
-        transform: scaleX(-1);
-        top: -8%;
+        width: 65%;
+        opacity: 50%;
+    }
+
+    &_circle {
+        transition: 0.1s linear, fill 3s linear;
     }
 }
 
+// <----------------- Betting specific CSS classes ----------------->
 
-h4 {
-    // font-size: 18px;
-    color: black;
+.bets {
+    position: fixed;
+    z-index: 1000;
+    right: 5%;
+    bottom: 0;
+    display: flex;
+    flex-direction: row;
+    width: 250px;
+    height: 220px;
+    margin-bottom: 20px;
 }
 
-.table_cards {
+.betting_class {
+    width: 60%;
     position: relative;
 }
 
 .bet, .raise, .fold {
-    position: fixed;
-    z-index: 1000;
-    right: 5%;
+    position: relative;
+    width: 80%;
     background-color: #FFD700;
     font-size: 15px;
     font-family: 'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif;
     padding: 10px 30px 10px 30px;
+    margin: 12.5px;
     border: 5px solid rgba(255, 204, 0, 0.835);
     box-shadow: 0 5px 7px rgba(0, 0, 0, 0.3);
     border-radius: 25px;
-    width: 150px;
 
     &:hover {
         background-color: rgb(134, 255, 134);
@@ -73,16 +124,83 @@ h4 {
     }
 }
 
-.bet {
-    bottom: 20%;
-}
-
-.raise {
-    bottom: 12.5%;
-}
-
 .fold {
-    bottom: 5%;
+    margin-bottom: 50px;
+}
+
+// <----------------- Slider specific CSS classes ----------------->
+
+.slider_class {
+    position: relative;
+    width: 40%;
+}
+
+.bet_value {
+    position: relative;
+    height: 100%;
+}
+
+// <--- Classes for slider --->
+input[type=range] {
+    appearance: none;
+    -webkit-appearance: none;
+    // Size
+    width: 200px;
+    height: 7px;
+
+    // Style
+    background: rgba(186, 186, 186, 0.6);
+    border-radius: 5px;
+    background-size: 0% 100%;
+    background-repeat: no-repeat;
+
+    // Position
+    margin-right: 15px;
+    rotate: -90deg;
+    position: relative;
+    left: -50%;
+    top: 25%;
+}
+
+// Class for slider thumb
+input[type=range]::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    height: 20px;
+    width: 20px;
+    border-radius: 50%;
+    background: radial-gradient(#d5d5d5, #ffffff);
+    cursor: ns-resize;
+    box-shadow: 0 0 2px 0 #555;
+}
+
+// Class for slider track
+input[type=range]::-webkit-slider-runnable-track  {
+    -webkit-appearance: none;
+    box-shadow: none;
+    border: none;
+    background: transparent;
+}
+// TODO: Add css classes for other browsers : Mozilla, IE, Safari
+
+// <--- Classes for value --->
+input::-webkit-outer-spin-button,
+input::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+input[type=number] {
+    width: 50px;
+    background-color: transparent;
+    border: 1px solid rgb(236, 189, 0);
+    height: 20px;
+    width: 100px;
+    font-size: 20px;
+    color: #fca841;
+    text-align: center;
+    font-family: 'Oxanium', cursive;
+    position: absolute;
+    bottom: 10%;
 }
 
 // <----------------- Player specific CSS classes ----------------->
@@ -102,8 +220,8 @@ h4 {
     }
 
     &_img {
-        width: 60px;
-        height: 60px;
+        width: $main-player-image-size-format2;
+        height: $main-player-image-size-format2;
     }
 
     &_cards {
@@ -133,8 +251,8 @@ h4 {
     }
 
     &_img {
-        width: 40px;
-        height: 40px;
+        width: $player-image-size-format2;
+        height: $player-image-size-format2;
     }
 }
 
