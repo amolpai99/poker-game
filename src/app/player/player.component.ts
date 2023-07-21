@@ -1,8 +1,10 @@
 import { Component, Input } from '@angular/core';
-import { GameService, PlayerDetails } from '../services/game.service';
+import { GameService } from '../services/game.service';
 import { ClientService } from '../services/client.service';
 import { Timer } from '../utils/timer';
 import { Slider } from '../utils/slider';
+import { PlayerDetails } from '../shared/objects';
+import { PLAYER_STATES } from '../shared/states';
 
 
 @Component({
@@ -20,6 +22,7 @@ export class PlayerComponent {
   player: PlayerDetails;
   playerStack: number = 0;
   mainPlayerId: string;
+  isMainPlayer: boolean;
 
   // Cards of the player
   cards: number[] | undefined;
@@ -29,16 +32,18 @@ export class PlayerComponent {
   // openPlayerCards denotes if the cards have been opened
   openPlayerCards: boolean;
 
+  // Betting specific data
+  enablePlaceBet: boolean;
+  minBetAmount = 100;
+  maxBetAmount = 100000;
+  betAmount: number = this.minBetAmount;
+
   // Timer specific data
-  startTimer: boolean;
   timer: Timer;
   totalTime: number = 15;
 
   // Slider specific data
   slider: Slider;
-  minBetAmount = 100;
-  maxBetAmount = 100000;
-  betAmount: number = this.minBetAmount;
 
   constructor(
     private client: ClientService,
@@ -46,16 +51,19 @@ export class PlayerComponent {
   }
 
   ngOnInit() {
+    this.player = this.gameService.getPlayer(this.playerId);
+    this.playerStack = this.player.stack;
+    this.maxBetAmount = this.playerStack;
+  
+    this.mainPlayerId = this.gameService.mainPlayerId;
+    this.isMainPlayer = (this.playerId == this.mainPlayerId);
+    this.cards = this.player.cards;
+
     // Timer object
     this.timer = new Timer(this.playerClass, this.totalTime);
 
     // Slider object for betting amount
     this.slider = new Slider(this.minBetAmount, this.maxBetAmount, this.betAmount);
-  
-    this.player = this.gameService.getPlayer(this.playerId);
-    this.playerStack = this.player.stack;
-    this.mainPlayerId = this.gameService.mainPlayerId;
-    this.cards = this.player.cards;
 
     console.log("PlayerComponent: ", "Player ID: ", this.playerId, " | Player: ", this.player);
 
@@ -86,12 +94,12 @@ export class PlayerComponent {
 
   processState(state: string, data: any) {
     switch(state) {
-      case "get_cards":
+      case PLAYER_STATES.GET_CARDS:
         this.cards = data["cards"]
         console.log("PlayerComponent:", "Player ID:", this.playerId, "Got cards:", this.cards)
         break;
       
-      case "open_cards":
+      case PLAYER_STATES.OPEN_CARDS:
         if(this.playerId == "player0") {
           let card = data["card"]
           if(card == "turn") {
@@ -107,38 +115,45 @@ export class PlayerComponent {
         }
         break;
 
-      case "place_bet":
+      case PLAYER_STATES.PLACE_BET:
         console.log("PlayerComponent", "Player ID:", this.playerId, "Received state:", state, "Starting Timer")
-        this.startTimer = true
-        // Need to start the timer after a small timeout to let the timer element get formed
-        setTimeout(() => {
-          this.timer.startTimer()
-        }, 100)
+        this.enablePlaceBet = true
+        this.timer.startTimer()
         break;
 
-      case "update_stack":
+      case PLAYER_STATES.UPDATE_STACK:
         console.log("PlayerComponent:", "Player ID:", this.playerId, "Updating stack of player", this.playerId)
-        this.playerStack -= this.betAmount;
-        this.startTimer = false;
-        this.timer.stopTimer();
+        if(this.isMainPlayer) {
+          console.log("PlayerComponent: ", "Main player. Not updating stack")
+          break;
+        }
+        this.updateStackAndStopTimer();
       }
+  }
+
+  updateStackAndStopTimer() {
+    this.playerStack -= this.betAmount;
+    this.enablePlaceBet = false;
+    this.timer.stopTimer();
+
+    if(this.isMainPlayer)
+      this.slider.reset();
   }
 
   placeBet() {
     console.log("PlayerComponent: Placing a new bet")
 
-    this.timer.stopTimer()
-    this.startTimer = false
-
     let state = {}
     state[this.playerId] = {
-      "state": "bet_placed",
+      "state": PLAYER_STATES.BET_PLACED,
       "data": {
         "amount": this.betAmount
       }
     }
     
     this.client.sendCurrentState(state)
+    this.updateStackAndStopTimer();
+    this.maxBetAmount = this.playerStack;
   }
 
   getHandClass() {

@@ -33,9 +33,9 @@
 
         <div class="player">
             <img class="{{playerClass}}_img" src="../../assets/images/user.png">
-            <svg *ngIf="startTimer" class="timer_svg" viewBox="0 0 100 100">
+            <svg *ngIf="enablePlaceBet" class="timer_svg" viewBox="0 0 100 100">
                 <!-- <circle cx="50" cy="50" r="50" fill="#2ffe00" stroke-width="5px"></circle> -->
-                <path class="timer_circle" id="timer_{{playerClass}}" stroke-width="2px" stroke="green" fill="#2ffe00"></path>
+                <path class="timer_circle" id="timer_{{playerClass}}" stroke-width="2px" stroke="green" fill="#2ffe00" d="M 50 50 L 50 0 A 50 50 0 0 1 50 0 Z"></path>
             </svg>
         </div>
         <div class="player_stack">
@@ -45,7 +45,7 @@
 
 </div>
 
-<div class="bets" *ngIf="playerId == mainPlayerId && startTimer">
+<div class="bets" *ngIf="isMainPlayer && enablePlaceBet">
     <div class="betting_class">
         <button class="bet" (click)="placeBet()">Bet</button>
         <button class="raise" (click)="placeBet()">Raise</button>

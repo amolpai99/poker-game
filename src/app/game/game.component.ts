@@ -1,6 +1,7 @@
 import { Component } from '@angular/core';
 import { ClientService } from '../services/client.service';
-import { GameService, PlayerDetails } from '../services/game.service';
+import { GameService } from '../services/game.service';
+import { GAME_STATES } from '../shared/states';
 
 @Component({
   selector: 'app-game',
@@ -57,14 +58,21 @@ export class GameComponent {
       }
     })
 
+    // Get new state from server and set the states in player objects
     this.client.getNewState().subscribe((data) => {
       console.log("GameComponent: ", "Got New Data: ", data)
       let gameData: any;
+
+      // First get any game related data present
       if("game" in data) {
         gameData = data["game"]
         delete data["game"]
       }
-      this.gameService.setNewState(data);
+
+      // Set player states
+      this.gameService.setPlayerStates(data);
+
+      // Process game data
       this.processGameState(gameData)
     })
   }
@@ -80,7 +88,7 @@ export class GameComponent {
       let data = state_data["data"]
 
       switch(state) {
-        case "update_pot":
+        case GAME_STATES.UPDATE_POT:
           let amount = data["amount"]
           this.potAmount = amount;
           break;
@@ -106,13 +114,8 @@ export class GameComponent {
       let data = {
         "new_round": true
       }
-      this.sendState("start_game", data)
+      this.sendState(GAME_STATES.START_GAME, data)
     }
-  }
-
-  // Temporary action to open table card
-  openCard() {
-    this.sendState("open_cards")
   }
 
   // Check if player exists or not

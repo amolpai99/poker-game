@@ -1,3 +1,5 @@
+import { COLORS } from "../shared/constants";
+
 export class Timer {
   // Timer specific data
   private timer: NodeJS.Timer;
@@ -19,7 +21,7 @@ export class Timer {
   startTimer() {
     let timePassed = 0;
     // Start arc animation one second earlier
-    this.currentColor = "green"
+    this.currentColor = COLORS.GREEN
     this.setTimerArc(timePassed + 0.5);
 
     this.timer = setInterval(() => {
@@ -70,10 +72,10 @@ export class Timer {
     }
 
     if(timeRemaining <= 10 && timeRemaining >= 5) {
-      timerElement?.setAttribute('fill', '#EFE34F');
+      timerElement?.setAttribute('fill', COLORS.DARK_YELLOW);
     }
     else if(timeRemaining <= 5) {
-      timerElement?.setAttribute('fill', '#CB2D03');
+      timerElement?.setAttribute('fill', COLORS.MAROON);
     }
 
     let arc = `M 50 50 L 50 0 A 50 50 0 ${majorArc} 1 ${x} ${y} Z`;

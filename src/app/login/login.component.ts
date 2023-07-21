@@ -2,7 +2,8 @@ import { Component, ViewChild } from '@angular/core';
 import { FormBuilder, FormGroup, NgForm, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 import { ClientService } from '../services/client.service';
-import { GameDetails, GameService, PlayerDetails } from '../services/game.service';
+import { GameService } from '../services/game.service';
+import { GameDetails } from '../shared/objects';
 
 
 var ids = ["p1", "p2", "p3", "p4", "p5"]

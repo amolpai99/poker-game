@@ -1,28 +1,8 @@
 import { Injectable } from '@angular/core';
 import { BehaviorSubject, Observable } from 'rxjs';
-
-const MAX_PLAYERS = 11
-const DEBUG = true
-
-const MOCK: GameDetails = {
-  gameId: "mock",
-  playerId: "player1",
-  allPlayers: {
-    "player0": {
-      "name": "table",
-      "stack": 0,
-    },
-    "player1": {
-      name: "gamer32116",
-      stack: 1000,
-    },
-    "player2": {
-      name: "abolipai",
-      stack: 1000,
-    }
-  },
-  isCreator: true
-}
+import { GameDetails, PlayerDetails } from '../shared/objects';
+import { DEBUG, MOCK_GAME_DETAILS } from '../shared/mocks';
+import { CONSTANTS } from '../shared/constants';
 
 @Injectable({
   providedIn: 'root'
@@ -34,7 +14,7 @@ export class GameService {
 
   constructor() {
     if(DEBUG) {
-      this._gameDetails = MOCK;
+      this._gameDetails = MOCK_GAME_DETAILS;
     }
   }
 
@@ -52,8 +32,9 @@ export class GameService {
     return this._tableId;
   }
 
+  // Get all player IDs. The array is rotated so that the first entry will be the main player ID.
   get playerIds(): string[] {
-    let ids = Array(MAX_PLAYERS).fill("");
+    let ids = Array(CONSTANTS.MAX_PLAYERS).fill("");
     let index = 0;
     for(let playerId in this._gameDetails.allPlayers) {
       if(playerId != this.tableId) {
@@ -78,6 +59,7 @@ export class GameService {
     return this._gameDetails.allPlayers;
   }
 
+  // Get specific player data
   getPlayer(id: string): PlayerDetails {
     if(id in this._gameDetails.allPlayers) {
       console.log("GameService: ", "Player found with id: ", id, " | Player: ", this._gameDetails.allPlayers[id])
@@ -92,6 +74,7 @@ export class GameService {
     return this._gameDetails.isCreator;
   }
 
+  // Get complete game details
   get gameDetails(): GameDetails {
     return this._gameDetails;
   }
@@ -124,7 +107,7 @@ export class GameService {
     this._gameDetails.allPlayers[playerData.id] = newPlayer
   }
 
-  setNewState(data: any) {
+  setPlayerStates(data: any) {
     console.log("GameService:", "Got new data: ", data)
     for(let player in data) {
       let playerDetails = this._gameDetails.allPlayers[player];
@@ -132,20 +115,4 @@ export class GameService {
     }
   }
 
-}
-
-
-export class GameDetails {
-  gameId: string;
-  playerId: string;
-  isCreator: boolean;
-  allPlayers: {[id: string]: PlayerDetails};
-}
-
-export class PlayerDetails {
-  name: string;
-  cards?: number[];
-  _behaviour?: BehaviorSubject<any>;
-  obs$?: Observable<any>;
-  stack: number;
 }
