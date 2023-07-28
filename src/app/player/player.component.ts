@@ -1,10 +1,11 @@
-import { Component, Input } from '@angular/core';
+import { Component, Input, SimpleChanges } from '@angular/core';
 import { GameService } from '../services/game.service';
 import { ClientService } from '../services/client.service';
 import { Timer } from '../utils/timer';
 import { Slider } from '../utils/slider';
 import { PlayerDetails } from '../shared/objects';
 import { PLAYER_STATES } from '../shared/states';
+import { cards, constants } from '../shared/constants';
 
 
 @Component({
@@ -17,7 +18,7 @@ export class PlayerComponent {
   @Input('type') playerType: string = "secondary";
   // player details containing name, id and class of the player
   @Input('player_class') playerClass: string;
-  @Input('player_id') playerId: string = "player1";
+  @Input('player_id') playerId: string;
 
   player: PlayerDetails;
   playerStack: number = 0;
@@ -33,7 +34,7 @@ export class PlayerComponent {
   openPlayerCards: boolean;
 
   // Betting specific data
-  enablePlaceBet: boolean;
+  enableBetting: boolean;
   minBetAmount = 100;
   maxBetAmount = 100000;
   betAmount: number = this.minBetAmount;
@@ -44,6 +45,7 @@ export class PlayerComponent {
 
   // Slider specific data
   slider: Slider;
+  enableSlider: boolean;
 
   constructor(
     private client: ClientService,
@@ -60,10 +62,11 @@ export class PlayerComponent {
     this.cards = this.player.cards;
 
     // Timer object
-    this.timer = new Timer(this.playerClass, this.totalTime);
+    this.timer = new Timer(this.playerId, this.totalTime);
 
     // Slider object for betting amount
-    this.slider = new Slider(this.minBetAmount, this.maxBetAmount, this.betAmount);
+    if(this.isMainPlayer)
+      this.slider = new Slider(this.playerId, this.minBetAmount, this.maxBetAmount, this.betAmount);
 
     console.log("PlayerComponent: ", "Player ID: ", this.playerId, " | Player: ", this.player);
 
@@ -92,6 +95,10 @@ export class PlayerComponent {
     })
   }
 
+  isPlayer(): boolean {
+    return (this.playerId != "") && (this.playerType != "table");
+  }
+
   processState(state: string, data: any) {
     switch(state) {
       case PLAYER_STATES.GET_CARDS:
@@ -100,12 +107,12 @@ export class PlayerComponent {
         break;
       
       case PLAYER_STATES.OPEN_CARDS:
-        if(this.playerId == "player0") {
+        if(this.playerId == constants.TABLE_ID) {
           let card = data["card"]
-          if(card == "turn") {
+          if(card == cards.TURN) {
             this.openCards[3] = "true"
           }
-          else if(card == "river") {
+          else if(card == cards.RIVER) {
             this.openCards[4] = "true"
           }
         }
@@ -117,7 +124,7 @@ export class PlayerComponent {
 
       case PLAYER_STATES.PLACE_BET:
         console.log("PlayerComponent", "Player ID:", this.playerId, "Received state:", state, "Starting Timer")
-        this.enablePlaceBet = true
+        this.enableBetting = true
         this.timer.startTimer()
         break;
 
@@ -127,17 +134,23 @@ export class PlayerComponent {
           console.log("PlayerComponent: ", "Main player. Not updating stack")
           break;
         }
-        this.updateStackAndStopTimer();
+        this.applyUpdates();
       }
   }
 
-  updateStackAndStopTimer() {
+  applyUpdates() {
     this.playerStack -= this.betAmount;
-    this.enablePlaceBet = false;
+    this.maxBetAmount = this.playerStack;
+    this.betAmount = this.minBetAmount;
+
+    if(this.isMainPlayer) {
+      this.slider.reset();
+      this.slider.updateMaxAmount(this.maxBetAmount); 
+    }
     this.timer.stopTimer();
 
-    if(this.isMainPlayer)
-      this.slider.reset();
+    this.enableSlider = false;
+    this.enableBetting = false;
   }
 
   placeBet() {
@@ -152,8 +165,16 @@ export class PlayerComponent {
     }
     
     this.client.sendCurrentState(state)
-    this.updateStackAndStopTimer();
-    this.maxBetAmount = this.playerStack;
+    this.applyUpdates();
+  }
+
+  raiseBet() {
+    if(this.enableSlider) {
+      this.placeBet()
+      return
+    }
+
+    this.enableSlider = true;
   }
 
   getHandClass() {
@@ -166,8 +187,8 @@ export class PlayerComponent {
   onAmountChange(event: any) {
     let target = event.target;
     if(target.value) {
-      this.betAmount = target.value;
-      this.slider.changeColor(target.value);
+      this.betAmount = target.valueAsNumber;
+      this.slider.changeColor(target.valueAsNumber);
     }
   }
 }

@@ -1,5 +1,6 @@
-export const CONSTANTS = {
-    MAX_PLAYERS: 11
+export const constants = {
+    MAX_PLAYERS: 11,
+    TABLE_ID: "player0"
 }
 
 export const COLORS = {
@@ -8,4 +9,9 @@ export const COLORS = {
     DARK_YELLOW: '#EFE34F',
     RED: '#F50700',
     MAROON: '#CB2D03'
+}
+
+export const cards = {
+    TURN: "turn",
+    RIVER: "river"
 }

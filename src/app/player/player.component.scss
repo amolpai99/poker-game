@@ -204,7 +204,7 @@ input[type=number] {
 }
 
 // <----------------- Player specific CSS classes ----------------->
-.player0 {
+.playerClass1 {
     position: absolute;
     top: 0;
     left: 35%;
@@ -239,7 +239,16 @@ input[type=number] {
     }
 }
 
-.player1, .player2, .player3, .player4, .player5, .player6, .player7, .player8, .player9, .player10 {
+.playerClass2,
+.playerClass3,
+.playerClass4,
+.playerClass5,
+.playerClass6,
+.playerClass7,
+.playerClass8,
+.playerClass9,
+.playerClass10,
+.playerClass11 {
     width: 125px;
     display: flex;
     align-items: center;
@@ -256,7 +265,7 @@ input[type=number] {
     }
 }
 
-.player1 {
+.playerClass2 {
     position: absolute;
     top: 0;
     right: 20%;
@@ -276,7 +285,7 @@ input[type=number] {
     }
 }
 
-.player2 {
+.playerClass3 {
     position: absolute;
     right: -10%;
 
@@ -295,7 +304,7 @@ input[type=number] {
     }
 }
 
-.player3 {
+.playerClass4 {
     position: absolute;
     top: 35%;
     right: 0;
@@ -315,7 +324,7 @@ input[type=number] {
     }
 }
 
-.player4 {
+.playerClass5 {
     position: absolute;
     bottom: -20%;
     right: -20%;
@@ -335,7 +344,7 @@ input[type=number] {
     }
 }
 
-.player5 {
+.playerClass6 {
     position: absolute;
     bottom: -20%;
     right: 0;
@@ -355,7 +364,7 @@ input[type=number] {
     }
 }
 
-.player6 {
+.playerClass7 {
     position: absolute;
     bottom: -20%;
     left: 0;
@@ -375,7 +384,7 @@ input[type=number] {
     }
 }
 
-.player7 {
+.playerClass8 {
     position: absolute;
     bottom: -20%;
     left: -20%;
@@ -395,7 +404,7 @@ input[type=number] {
     }
 }
 
-.player8 {
+.playerClass9 {
     position: absolute;
     top: 35%;
     left: 0;
@@ -415,7 +424,7 @@ input[type=number] {
     }
 }
 
-.player9 {
+.playerClass10 {
     position: absolute;
     left: -10%;
 
@@ -434,7 +443,7 @@ input[type=number] {
     }
 }
 
-.player10 {
+.playerClass11 {
     position: absolute;
     top: 0;
     left: 20%;

@@ -2,14 +2,14 @@ import { Injectable } from '@angular/core';
 import { BehaviorSubject, Observable } from 'rxjs';
 import { GameDetails, PlayerDetails } from '../shared/objects';
 import { DEBUG, MOCK_GAME_DETAILS } from '../shared/mocks';
-import { CONSTANTS } from '../shared/constants';
+import { constants } from '../shared/constants';
 
 @Injectable({
   providedIn: 'root'
 })
 export class GameService {
   private _gameDetails: GameDetails;
-  private _tableId: string = "player0";
+  private _tableId: string = constants.TABLE_ID;
   private _playerObservables: BehaviorSubject<any>[];
 
   constructor() {
@@ -34,7 +34,7 @@ export class GameService {
 
   // Get all player IDs. The array is rotated so that the first entry will be the main player ID.
   get playerIds(): string[] {
-    let ids = Array(CONSTANTS.MAX_PLAYERS).fill("");
+    let ids = Array(constants.MAX_PLAYERS).fill("");
     let index = 0;
     for(let playerId in this._gameDetails.allPlayers) {
       if(playerId != this.tableId) {

@@ -4,12 +4,12 @@ export class Timer {
   // Timer specific data
   private timer: NodeJS.Timer;
 
-  private playerClass: string;
+  private playerId: string;
   private currentColor: string;
   private totalTime: number;
 
-  constructor(playerClass: string, totalTime: number) {
-    this.playerClass = playerClass
+  constructor(playerId: string, totalTime: number) {
+    this.playerId = playerId
     this.currentColor = "green"
     this.totalTime = totalTime
   }
@@ -42,7 +42,7 @@ export class Timer {
     // let timerArcRemaining = (timeRemaining / this.totalTime) * TOTAL_TIMER_ARC;
     // let attribute = timerArcRemaining + " " + TOTAL_TIMER_ARC
     // console.log("PlayerComponent: Timer: Time passed: ", timePassed, " Time remaining: ", timeRemaining, " , TimerArcRemaining: ", timerArcRemaining)
-    // let id = 'timer_' + this.playerClass
+    // let id = 'timer_' + this.playerId
     // let timerElement = document.getElementById(id)
     // timerElement?.setAttribute('stroke-dasharray', attribute);  
 
@@ -61,7 +61,7 @@ export class Timer {
 
     // <--- FORMAT 2: Display name at top and have timer as background timer in div --->
     let timeRemaining = this.totalTime - timePassed;
-    let id = `timer_${this.playerClass}`;
+    let id = `timer_${this.playerId}`;
     let timerElement = document.getElementById(id);
 
     let x = 50 * (1 + this.calcSin(timePassed));
