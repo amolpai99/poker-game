@@ -15,3 +15,11 @@ export const cards = {
     TURN: "turn",
     RIVER: "river"
 }
+
+export const betting = {
+    BET: "Bet",
+    CALL: "Call",
+    RAISE: "Raise",
+    CHECK: "Check",
+    FOLD: "Fold"
+}

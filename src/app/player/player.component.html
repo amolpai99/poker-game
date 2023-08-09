@@ -47,9 +47,9 @@
 
 <div class="bets" *ngIf="isMainPlayer && enableBetting">
     <div class="betting_class">
-        <button class="bet" (click)="placeBet()">Bet</button>
-        <button class="raise" (click)="raiseBet()">Raise</button>
-        <button class="fold" (click)="placeBet()">Fold</button>
+        <button class="bet" (click)="checkOrCallAction()">{{checkOrCall}}</button>
+        <button class="raise" (click)="betOrRaiseAction()">{{betOrRaise}}</button>
+        <button class="fold" (click)="foldAction()">{{fold}}</button>
     </div>
     <div *ngIf="enableSlider" class="slider_class">
         <input

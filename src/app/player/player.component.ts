@@ -5,7 +5,7 @@ import { Timer } from '../utils/timer';
 import { Slider } from '../utils/slider';
 import { PlayerDetails } from '../shared/objects';
 import { PLAYER_STATES } from '../shared/states';
-import { cards, constants } from '../shared/constants';
+import { betting, cards, constants } from '../shared/constants';
 
 
 @Component({
@@ -39,6 +39,10 @@ export class PlayerComponent {
   maxBetAmount = 100000;
   betAmount: number = this.minBetAmount;
 
+  checkOrCall = betting.CHECK;
+  betOrRaise = betting.BET;
+  fold = betting.FOLD;
+
   // Timer specific data
   timer: Timer;
   totalTime: number = 15;
@@ -68,6 +72,7 @@ export class PlayerComponent {
     if(this.isMainPlayer)
       this.slider = new Slider(this.playerId, this.minBetAmount, this.maxBetAmount, this.betAmount);
 
+    this.enableBetting = true
     console.log("PlayerComponent: ", "Player ID: ", this.playerId, " | Player: ", this.player);
 
     // TODO: Move this to separate function which will get called when new game starts
@@ -124,6 +129,17 @@ export class PlayerComponent {
 
       case PLAYER_STATES.PLACE_BET:
         console.log("PlayerComponent", "Player ID:", this.playerId, "Received state:", state, "Starting Timer")
+        let currentBetAmount = data["amount"]
+        if(currentBetAmount == 0) {
+          this.checkOrCall = betting.CHECK
+          this.betOrRaise = betting.BET
+        }
+        else {
+          this.minBetAmount = currentBetAmount
+          this.checkOrCall = betting.CALL
+          this.betOrRaise = betting.RAISE
+        }
+
         this.enableBetting = true
         this.timer.startTimer()
         break;
@@ -136,6 +152,16 @@ export class PlayerComponent {
         }
         this.applyUpdates();
       }
+  }
+
+  sendState(state: string, data: any) {
+    let currentStateData = {};
+    currentStateData[this.playerId] = {
+      "state": state,
+      "data": data,
+    }
+
+    this.client.sendCurrentState(currentStateData);
   }
 
   applyUpdates() {
@@ -153,35 +179,42 @@ export class PlayerComponent {
     this.enableBetting = false;
   }
 
-  placeBet() {
-    console.log("PlayerComponent: Placing a new bet")
-
-    let state = {}
-    state[this.playerId] = {
-      "state": PLAYER_STATES.BET_PLACED,
-      "data": {
-        "amount": this.betAmount
-      }
+  checkOrCallAction() {
+    console.log("PlayerComponent: Placing new action: ", this.checkOrCall)
+    let data = {
+      "type": this.checkOrCall.toLowerCase()
     }
-    
-    this.client.sendCurrentState(state)
+
+    this.sendState(PLAYER_STATES.BET_PLACED, data);
     this.applyUpdates();
   }
 
-  raiseBet() {
-    if(this.enableSlider) {
-      this.placeBet()
+  betOrRaiseAction() {
+    if(!this.enableSlider) {
+      this.enableSlider = true
       return
     }
 
-    this.enableSlider = true;
+    console.log("PlayerComponent: Placing new action", this.betOrRaise)
+
+    let data = {
+      "type": this.betOrRaise.toLowerCase(),
+      "amount": this.betAmount
+    }
+
+    this.sendState(PLAYER_STATES.BET_PLACED, data)
+    this.applyUpdates();
   }
 
-  getHandClass() {
-    if(this.openPlayerCards) {
-      return this.playerClass+"_cards_open"
+  foldAction() {
+    console.log("PlayerComponent: Placing new action", this.fold)
+
+    let data = {
+      "type": this.fold.toLowerCase()
     }
-    return this.playerClass+"_cards"
+
+    this.sendState(PLAYER_STATES.BET_PLACED, data);
+    this.applyUpdates();
   }
 
   onAmountChange(event: any) {
@@ -190,5 +223,14 @@ export class PlayerComponent {
       this.betAmount = target.valueAsNumber;
       this.slider.changeColor(target.valueAsNumber);
     }
+  }
+
+
+  // <-------------------View-Related functions------------------->
+  getHandClass() {
+    if(this.openPlayerCards) {
+      return this.playerClass+"_cards_open"
+    }
+    return this.playerClass+"_cards"
   }
 }

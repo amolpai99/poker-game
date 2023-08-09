@@ -3,18 +3,25 @@
     Responsible for recording all the operations performed during the game,
     including betting, cards generation and finding the winner.
 '''
+import logging
 from flask import Flask, request, jsonify
 from flask_cors import CORS
 from flask_socketio import SocketIO, Namespace
-# from poker.poker import PokerHand
-from poker.games import Games
+from handlers.game_handler import GameHandler
+
+logging.basicConfig(
+        level=logging.DEBUG,
+        format="%(asctime)s %(filename)s:%(lineno)s %(message)s",
+)
+
+logger = logging.getLogger(__name__)
 
 app = Flask(__name__)
 CORS(app)
 
 sock = SocketIO(app, cors_allowed_origins="*")
 
-game_controller = Games()
+game_handler = GameHandler()
 
 class GenericNamespace(Namespace):
     '''
@@ -29,28 +36,28 @@ class GenericNamespace(Namespace):
         '''
             on_connect function is triggered on "connect" event
         '''
-        print("Connection successful with game: ", self.game_id)
+        logger.info("Connection successful with game: %s", self.game_id)
 
     def on_generate_cards(self, data):
         '''
             Generate cards for all players
         '''
-        print("Generating cards for game: ", self.game_id)
+        logger.info("Generating cards for game: %s", self.game_id)
         new_round = data.get("new_round", False) if data else False
 
         # Generate cards for all players
-        game_controller.generate_cards(self.game_id, new_round=new_round)
+        game_handler.generate_cards(self.game_id, new_round=new_round)
 
         # Send player details to all connected clients
-        player_details = game_controller.get_game_details(self.game_id)["players"]
+        player_details = game_handler.get_game_details(self.game_id)["players"]
         sock.emit('get_cards', player_details, namespace=self.namespace)
         return {"status": "success"}
 
     def on_open_cards(self):
-        print("Opening cards")
-        data = game_controller.open_cards(self.game_id)
+        logger.info("Opening cards")
+        data = game_handler.open_cards(self.game_id)
 
-        print(data)
+        logger.info(data)
         if "table" in data:
             sock.emit('open_table_cards', data["table"], namespace=self.namespace)
         else:
@@ -59,10 +66,10 @@ class GenericNamespace(Namespace):
         return {"status": "success"}
 
     def on_current_state(self, data):
-        print("Got current state:", data)
-        new_data = game_controller.get_next_state(self.game_id, data)
+        logger.info("Got current state: %s", data)
+        new_data = game_handler.get_next_state(self.game_id, data)
 
-        print("New state: ", new_data)
+        logger.info("New state: %s", new_data)
         sock.emit("next_state", new_data, namespace=self.namespace)
 
 
@@ -81,22 +88,23 @@ def create_or_join_game():
             return "Game name cannot be none when joining game", 400
 
         try:
-            player_id = game_controller.join_new_game(player_name, game_id)
+            player_id = game_handler.join_new_game(player_name, game_id)
 
             namespace = "/" + game_id
             sock.emit("new_player", {"name": player_name, "id": player_id}, namespace=namespace)
         except Exception as ex:
+            logger.error("Got exception while trying to join game for player: %s. Ex: %s", player_name, str(ex))
             return str(ex), 400
 
     else:
-        game_id = game_controller.create_new_game(player_name)
+        game_id = game_handler.create_new_game(player_name)
         namespace = "/" + game_id
         new_namespace_handler = GenericNamespace(namespace, game_id)
         sock.on_namespace(new_namespace_handler)
 
     game_details = {
         "game_id": game_id,
-        "game_details": game_controller.get_game_details(game_id)
+        "game_details": game_handler.get_game_details(game_id)
     }
     return jsonify(game_details), 200
 
