@@ -38,39 +38,15 @@ class GenericNamespace(Namespace):
         '''
         logger.info("Connection successful with game: %s", self.game_id)
 
-    def on_generate_cards(self, data):
-        '''
-            Generate cards for all players
-        '''
-        logger.info("Generating cards for game: %s", self.game_id)
-        new_round = data.get("new_round", False) if data else False
-
-        # Generate cards for all players
-        game_handler.generate_cards(self.game_id, new_round=new_round)
-
-        # Send player details to all connected clients
-        player_details = game_handler.get_game_details(self.game_id)["players"]
-        sock.emit('get_cards', player_details, namespace=self.namespace)
-        return {"status": "success"}
-
-    def on_open_cards(self):
-        logger.info("Opening cards")
-        data = game_handler.open_cards(self.game_id)
-
-        logger.info(data)
-        if "table" in data:
-            sock.emit('open_table_cards', data["table"], namespace=self.namespace)
-        else:
-            sock.emit('open_player_cards', data["players"], namespace=self.namespace)
-
-        return {"status": "success"}
-
     def on_current_state(self, data):
         logger.info("Got current state: %s", data)
+        # try:
         new_data = game_handler.get_next_state(self.game_id, data)
-
         logger.info("New state: %s", new_data)
         sock.emit("next_state", new_data, namespace=self.namespace)
+        # except Exception as e:
+        #     logger.info("Encountered exception while starting new game: %s", str(e))
+        #     sock.emit("next_state", data={"errors": f"Encountered error while starting game: {str(e)}"}, namespace=self.namespace)
 
 
 @app.route("/game", methods=["POST"])

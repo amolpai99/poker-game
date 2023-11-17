@@ -59,22 +59,27 @@ export class GameComponent {
     })
 
     // Get new state from server and set the states in player objects
-    this.client.getNewState().subscribe((data) => {
-      console.log("GameComponent: ", "Got New Data: ", data)
-      let gameData: any;
-
-      // First get any game related data present
-      if("game" in data) {
-        gameData = data["game"]
-        delete data["game"]
-      }
-
-      // Set player states
-      this.gameService.setPlayerStates(data);
-
-      // Process game data
-      this.processGameState(gameData)
-    })
+    this.client.getNewState().subscribe({
+      next: (data) => {
+        console.log("GameComponent: ", "Got New Data: ", data)
+        let gameData: any;
+  
+        // First get any game related data present
+        if("game" in data) {
+          gameData = data["game"]
+          delete data["game"]
+        }
+  
+        // Set player states
+        this.gameService.setPlayerStates(data);
+  
+        // Process game data
+        this.processGameState(gameData)
+      },
+      error: (data) => {
+        console.log("GameComponent: Encountered error: ", data["errors"])
+      },
+    });
   }
 
   processGameState(gameData: any) {

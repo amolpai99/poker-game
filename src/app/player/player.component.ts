@@ -38,6 +38,7 @@ export class PlayerComponent {
   minBetAmount = 100;
   maxBetAmount = 100000;
   betAmount: number = this.minBetAmount;
+  totalBetAmount: number = 100;
 
   checkOrCall = betting.CHECK;
   betOrRaise = betting.BET;
@@ -72,7 +73,6 @@ export class PlayerComponent {
     if(this.isMainPlayer)
       this.slider = new Slider(this.playerId, this.minBetAmount, this.maxBetAmount, this.betAmount);
 
-    this.enableBetting = true
     console.log("PlayerComponent: ", "Player ID: ", this.playerId, " | Player: ", this.player);
 
     // TODO: Move this to separate function which will get called when new game starts
@@ -131,6 +131,7 @@ export class PlayerComponent {
         console.log("PlayerComponent", "Player ID:", this.playerId, "Received state:", state, "Starting Timer")
         let currentBetAmount = data["amount"]
         if(currentBetAmount == 0) {
+          this.minBetAmount = 100;
           this.checkOrCall = betting.CHECK
           this.betOrRaise = betting.BET
         }
@@ -140,17 +141,18 @@ export class PlayerComponent {
           this.betOrRaise = betting.RAISE
         }
 
+        this.betAmount = this.minBetAmount;
+
         this.enableBetting = true
         this.timer.startTimer()
         break;
 
       case PLAYER_STATES.UPDATE_STACK:
         console.log("PlayerComponent:", "Player ID:", this.playerId, "Updating stack of player", this.playerId)
-        if(this.isMainPlayer) {
-          console.log("PlayerComponent: ", "Main player. Not updating stack")
-          break;
-        }
-        this.applyUpdates();
+        let amount = data["amount"];
+        this.playerStack -= amount;
+        this.maxBetAmount = this.playerStack;
+        this.stopTimerAndDisableBetting();
       }
   }
 
@@ -164,11 +166,7 @@ export class PlayerComponent {
     this.client.sendCurrentState(currentStateData);
   }
 
-  applyUpdates() {
-    this.playerStack -= this.betAmount;
-    this.maxBetAmount = this.playerStack;
-    this.betAmount = this.minBetAmount;
-
+  stopTimerAndDisableBetting() {
     if(this.isMainPlayer) {
       this.slider.reset();
       this.slider.updateMaxAmount(this.maxBetAmount); 
@@ -182,11 +180,11 @@ export class PlayerComponent {
   checkOrCallAction() {
     console.log("PlayerComponent: Placing new action: ", this.checkOrCall)
     let data = {
-      "type": this.checkOrCall.toLowerCase()
+      "action": this.checkOrCall.toLowerCase()
     }
 
+    this.stopTimerAndDisableBetting();
     this.sendState(PLAYER_STATES.BET_PLACED, data);
-    this.applyUpdates();
   }
 
   betOrRaiseAction() {
@@ -198,23 +196,23 @@ export class PlayerComponent {
     console.log("PlayerComponent: Placing new action", this.betOrRaise)
 
     let data = {
-      "type": this.betOrRaise.toLowerCase(),
+      "action": this.betOrRaise.toLowerCase(),
       "amount": this.betAmount
     }
 
+    this.stopTimerAndDisableBetting();
     this.sendState(PLAYER_STATES.BET_PLACED, data)
-    this.applyUpdates();
   }
 
   foldAction() {
     console.log("PlayerComponent: Placing new action", this.fold)
 
     let data = {
-      "type": this.fold.toLowerCase()
+      "action": this.fold.toLowerCase()
     }
 
+    this.stopTimerAndDisableBetting();
     this.sendState(PLAYER_STATES.BET_PLACED, data);
-    this.applyUpdates();
   }
 
   onAmountChange(event: any) {

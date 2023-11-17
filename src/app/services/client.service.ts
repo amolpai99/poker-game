@@ -61,7 +61,12 @@ export class ClientService {
     let obs = new Observable<any>((obs) => {
       this._socket.on("next_state", (data: any) => {
         console.log("ClientService: ", "Got next state: ", data)
-        obs.next(data)
+        if("errors" in data) {
+          obs.error(data)
+        }
+        else {
+          obs.next(data)
+        }
       })
     })
     return obs

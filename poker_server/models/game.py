@@ -2,7 +2,7 @@
     Module for handling data related to single game
 '''
 from typing import Dict, List, Optional
-from dataclasses import dataclass, asdict
+from dataclasses import dataclass
 from .player import PlayerDetails
 from .round import RoundDetails
 from .states import State
@@ -15,11 +15,13 @@ class GameDetails:
         :param: num_players
         :param: players
         :param: round_details
+        :param: minimum_bet_amount
     '''
     game_name: str
     num_players: int
     players: Dict[str, PlayerDetails]
     round_details: RoundDetails
+    minimum_bet_amount: int
     _desired_states: Optional[List[State]] = None
 
     def update(self, key, value):

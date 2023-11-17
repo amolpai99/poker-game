@@ -237,6 +237,12 @@ input[type=number] {
         left: 20%;
         z-index: 3;
     }
+
+    &_betamount {
+        position: absolute;
+        z-index: 3;
+        
+    }
 }
 
 .playerClass2,

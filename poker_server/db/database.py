@@ -30,7 +30,7 @@ class Database:
             logging.warning("Could not find %s in %s", game_id, self.games_list)
             return None
         game_details = self.games_list[game_id]
-        logger.info("Found game with game_id %s: %s", game_id, game_details)
+        # logger.info("Found game with game_id %s: %s", game_id, game_details)
         return game_details
 
     def add_player(self, game_id, data):

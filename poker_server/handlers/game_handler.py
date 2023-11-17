@@ -40,10 +40,15 @@ class GameHandler():
 
         table_details = models.PlayerDetails(CONFIG.TABLE_NAME, None, 0)
         new_player_details = models.PlayerDetails(data["username"], None, data.get("initial_stack", 1000))
-        players = dict(player0=table_details, player1=new_player_details)
+        players = dict()
+        players[CONFIG.PLAYER_IDS[0]] = table_details
+        players[CONFIG.PLAYER_IDS[1]] = new_player_details
 
-        round_details = models.RoundDetails(round_num=0, pot_amount=0, player_bet_amounts={}, selected_cards=[])
-        new_game = models.GameDetails(game_name=game_name, num_players=1, players=players, round_details=round_details)
+        key_players = models.KeyPlayerIds(dealer=CONFIG.PLAYER_IDS[1])
+        minimum_bet_amount = data.get("minimum_amount", 100)
+
+        round_details = models.RoundDetails(round_num=0, pot_amount=0, current_player_states={}, selected_cards=[], key_player_ids=key_players, small_blind_amount=100)
+        new_game = models.GameDetails(game_name=game_name, num_players=1, players=players, minimum_bet_amount=minimum_bet_amount, round_details=round_details)
 
         logger.info("Creating new game: %s", new_game)
 

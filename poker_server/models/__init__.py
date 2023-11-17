@@ -3,7 +3,7 @@
 '''
 from .game import GameDetails
 from .player import PlayerDetails
-from .round import RoundDetails
+from .round import RoundDetails, PlayerRoundState, KeyPlayerIds
 from .states import State
 
 class BaseClass:

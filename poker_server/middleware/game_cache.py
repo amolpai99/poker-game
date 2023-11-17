@@ -47,10 +47,10 @@ class GameCache:
         if update_fields is None:
             return
 
-        logger.info("GameCache: Saving to database for game_id: %s. Data: %s", game_id, update_fields)
+        # logger.info("GameCache: Saving to database for game_id: %s. Data: %s", game_id, update_fields)
         self.database.save(game_id=game_id, update_fields=update_fields)
         self.__game_data_cached[game_id] = self.database.read(game_id=game_id)
-        logger.info("GameCache: Got new data from cache after saving: %s", self.__game_data_cached[game_id])
+        # logger.info("GameCache: Got new data from cache after saving: %s", self.__game_data_cached[game_id])
 
 
     def get_all_states(self, game_id):
@@ -59,7 +59,7 @@ class GameCache:
             logger.warning("Game details is None")
             return None
 
-        logger.info("GameCache: Got game data: %s", game_details)
+        # logger.info("GameCache: Got game data: %s", game_details)
         all_states = {}
         if game_details.desired_states:
             desired_states = []
